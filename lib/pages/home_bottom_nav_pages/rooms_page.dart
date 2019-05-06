@@ -6,7 +6,6 @@ import 'package:flutter_home_automation/networks/dio_api.dart';
 import 'package:flutter_home_automation/networks/network_calls.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
 import 'package:navigate/navigate.dart';
-import 'package:rounded_modal/rounded_modal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RoomsPage extends StatefulWidget {
@@ -175,7 +174,7 @@ class _RoomsPageState extends State<RoomsPage> {
       borderRadius: BorderRadius.circular(25.0),
       borderSide: BorderSide(
         width: 0.7,
-        color: Colors.lightBlue,
+        color: Colors.black,
         style: BorderStyle.solid,
       ),
     );
@@ -211,12 +210,14 @@ class _RoomsPageState extends State<RoomsPage> {
         fillColor: Colors.white,
         hintText: "Room name",
         hintStyle: TextStyle(
-          fontSize: 15.0,
+          fontSize: 13.5,
           color: Colors.grey,
         ),
       ),
-      textInputAction: TextInputAction.next,
-      onEditingComplete: () {},
+      textInputAction: TextInputAction.done,
+      onEditingComplete: () {
+        FocusScope.of(context).detach();
+      },
     );
   }
 
@@ -327,9 +328,9 @@ class _RoomsPageState extends State<RoomsPage> {
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.cancel,
-                                      color: Colors.red,
+                                      color: Colors.black,
                                     ),
-                                    iconSize: 24.0,
+                                    iconSize: 34.0,
                                     onPressed: () {
                                       _roomsPageBloc.removeTempRoom();
                                     },
@@ -340,9 +341,9 @@ class _RoomsPageState extends State<RoomsPage> {
                                   child: IconButton(
                                     icon: Icon(
                                       Icons.done,
-                                      color: Colors.lightBlue,
+                                      color: Colors.black,
                                     ),
-                                    iconSize: 24.0,
+                                    iconSize: 34.0,
                                     onPressed: () async {
                                       FocusScope.of(context).detach();
                                       await _createRoom();
@@ -440,6 +441,80 @@ class _RoomsPageState extends State<RoomsPage> {
           );
   }
 
+  List<Widget> _deleteDialogActions(Map res) {
+    return <Widget>[
+      StreamBuilder<bool>(
+        initialData: false,
+        stream: _roomsPageBloc.getDeleteRoomLoadingStatus,
+        builder: (BuildContext context,
+            AsyncSnapshot<bool> deleteRoomLoadingSnapshot) {
+          return !deleteRoomLoadingSnapshot.data
+              ? Row(
+                  children: <Widget>[
+                    OutlineButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          20.0,
+                        ),
+                      ),
+                      borderSide: BorderSide(color: Colors.black),
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      onPressed: () async {
+                        _roomsPageBloc.setDeleteRoomLoadingStatus(true);
+                        await NetworkCalls.deteleRoom({
+                          "roomId": res["_id"],
+                          "userId": _prefs.getString("userId"),
+                        });
+                        await _getAllRooms(initialLoading: false);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    OutlineButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          20.0,
+                        ),
+                      ),
+                      borderSide: BorderSide(color: Colors.black),
+                      child: Text(
+                        "Close",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                )
+              : Container(
+                  height: 20.0,
+                  width: 20.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+                    strokeWidth: 1.5,
+                    backgroundColor: Colors.transparent,
+                  ),
+                );
+        },
+      ),
+      SizedBox(
+        width: 1.0,
+      ),
+    ];
+  }
+
   void _showDeleteDialog(Map res) {
     showDialog(
       context: context,
@@ -447,82 +522,100 @@ class _RoomsPageState extends State<RoomsPage> {
         // return object of type Dialog
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25.0),
+            borderRadius: BorderRadius.circular(30.0),
           ),
           elevation: 15.0,
-          title: Text("Delete"),
-          content: Text("Deleting room can't be undone."),
-          actions: <Widget>[
-            StreamBuilder<bool>(
-              initialData: false,
-              stream: _roomsPageBloc.getDeleteRoomLoadingStatus,
-              builder: (BuildContext context,
-                  AsyncSnapshot<bool> deleteRoomLoadingSnapshot) {
-                return !deleteRoomLoadingSnapshot.data
-                    ? Row(
-                        children: <Widget>[
-                          OutlineButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                20.0,
-                              ),
-                            ),
-                            borderSide: BorderSide(color: Colors.black),
-                            child: Text(
-                              "Delete",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            onPressed: () async {
-                              _roomsPageBloc.setDeleteRoomLoadingStatus(true);
-                              await NetworkCalls.deteleRoom({
-                                "roomId": res["_id"],
-                                "userId": _prefs.getString("userId"),
-                              });
-                              await _getAllRooms(initialLoading: false);
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          OutlineButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                20.0,
-                              ),
-                            ),
-                            borderSide: BorderSide(color: Colors.black),
-                            child: Text(
-                              "Close",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      )
-                    : Container(
-                        height: 20.0,
-                        width: 20.0,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.black),
-                          strokeWidth: 1.5,
-                          backgroundColor: Colors.transparent,
-                        ),
-                      );
-              },
-            )
-          ],
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                Icons.warning,
+                color: Colors.orange,
+                size: 24.0,
+              ),
+              SizedBox(
+                width: 7.0,
+              ),
+              Text(
+                "Delete",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 17.0,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            "Deleting room can't be undone.",
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 15.0,
+            ),
+          ),
+          actions: _deleteDialogActions(res),
         );
       },
+    );
+  }
+
+  Widget _buildRoomsSliverGridWidget(double height, double width) {
+    return StreamBuilder<List>(
+      stream: _roomsPageBloc.getRoomsList,
+      builder: (BuildContext context, AsyncSnapshot<List> roomListSnapshot) {
+        if (roomListSnapshot.hasData) {
+          if (_response != null && _response.isNotEmpty) {
+            _response.clear();
+          }
+
+          _response.addAll(roomListSnapshot.data);
+        }
+
+        return roomListSnapshot.hasData && roomListSnapshot.data.length > 0
+            ? SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return _buildRoomCardWidget(height, width, index);
+                  },
+                  childCount: roomListSnapshot.data.length,
+                ),
+              )
+            : SliverToBoxAdapter(
+                child: Container(
+                  height: height,
+                  child: Center(
+                    child: Text(
+                      "No rooms found!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+      },
+    );
+  }
+
+  Widget _buildInitialLoadingWidget() {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Container(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 2.0,
+            backgroundColor: Colors.transparent,
+          ),
+        ),
+      ),
     );
   }
 
@@ -555,62 +648,8 @@ class _RoomsPageState extends State<RoomsPage> {
               builder:
                   (BuildContext context, AsyncSnapshot<bool> loadingSnapshot) {
                 return loadingSnapshot.data
-                    ? SliverToBoxAdapter(
-                        child: Center(
-                          child: Container(
-                            child: CircularProgressIndicator(
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white),
-                              strokeWidth: 2.0,
-                              backgroundColor: Colors.transparent,
-                            ),
-                          ),
-                        ),
-                      )
-                    : StreamBuilder<List>(
-                        stream: _roomsPageBloc.getRoomsList,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<List> roomListSnapshot) {
-                          if (roomListSnapshot.hasData) {
-                            if (_response != null && _response.isNotEmpty) {
-                              _response.clear();
-                            }
-
-                            _response.addAll(roomListSnapshot.data);
-                          }
-
-                          return roomListSnapshot.hasData &&
-                                  roomListSnapshot.data.length > 0
-                              ? SliverGrid(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                  ),
-                                  delegate: SliverChildBuilderDelegate(
-                                    (BuildContext context, int index) {
-                                      return _buildRoomCardWidget(
-                                          height, width, index);
-                                    },
-                                    childCount: roomListSnapshot.data.length,
-                                  ),
-                                )
-                              : SliverToBoxAdapter(
-                                  child: Container(
-                                    height: height,
-                                    child: Center(
-                                      child: Text(
-                                        "No rooms found!",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                        },
-                      );
+                    ? _buildInitialLoadingWidget()
+                    : _buildRoomsSliverGridWidget(height, width);
               },
             ),
           ),
@@ -621,7 +660,6 @@ class _RoomsPageState extends State<RoomsPage> {
 
   @override
   void dispose() {
-    _roomNameController.dispose();
     super.dispose();
   }
 }
