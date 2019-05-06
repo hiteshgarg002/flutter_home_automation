@@ -1,0 +1,17 @@
+enum AutoManualModeAppliances {
+  LIGHT,
+  FAN,
+  AC,
+  WATER_MOTOR,
+  WATER_PURIFIER,
+}
+
+enum ManualOnlyModeAppliances{
+  MOTION_DETECTOR_SENSOR,
+  TEMPERATURE_SENSOR,
+  HUMIDITY_SENSOR,
+  TV,
+  COMPUTER,
+  WASHING_MACHINE,
+  FRIDGE,
+}
