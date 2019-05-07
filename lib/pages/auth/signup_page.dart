@@ -70,7 +70,7 @@
 
 //   Widget _buildImageSourceModalContentWidget() {
 //     return Container(
-//       height: 150.0,
+//       height: ((20.320 * height) / 100),
 //       child: Column(
 //         crossAxisAlignment: CrossAxisAlignment.center,
 //         mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +80,7 @@
 //               "CAMERA",
 //               style: TextStyle(
 //                 color: Colors.white,
-//                 fontSize: 15.0,
+//                 fontSize: ((2.032 * height) / 100),
 //                 fontWeight: FontWeight.bold,
 //               ),
 //             ),
@@ -90,14 +90,14 @@
 //             },
 //           ),
 //           SizedBox(
-//             height: 30.0,
+//             height: ((4.064 * height) / 100),
 //           ),
 //           GestureDetector(
 //             child: Text(
 //               "GALLERY",
 //               style: TextStyle(
 //                 color: Colors.white,
-//                 fontSize: 15.0,
+//                 fontSize: ((2.032 * height) / 100),
 //                 fontWeight: FontWeight.bold,
 //               ),
 //             ),
@@ -115,7 +115,7 @@
 //     await showRoundedModalBottomSheet(
 //       autoResize: false,
 //       color: CustomColors.grey,
-//       radius: 30.0,
+//       radius: ((4.064 * height) / 100),
 //       dismissOnTap: false,
 //       context: context,
 //       builder: (BuildContext context) {
@@ -126,7 +126,7 @@
 
 //   OutlineInputBorder _buildTextFieldOutlineInputBorder() {
 //     return OutlineInputBorder(
-//       borderRadius: BorderRadius.circular(25.0),
+//       borderRadius: BorderRadius.circular(((3.386 * height) / 100)),
 //       borderSide: BorderSide(
 //         width: 1.0,
 //         color: Colors.transparent,
@@ -143,17 +143,17 @@
 //         bottom: MediaQuery.of(context).viewInsets.bottom,
 //       ),
 //       keyboardType: TextInputType.text,
-//       cursorWidth: 0.5,
+//       cursorWidth: ((0.067 * height) / 100),
 //       cursorColor: Colors.white,
 //       style: TextStyle(
-//         fontSize: 15.0,
+//         fontSize: ((2.032 * height) / 100),
 //         color: Colors.white,
 //       ),
 //       decoration: InputDecoration(
 //         prefixIcon: Icon(
 //           Icons.email,
 //           color: Colors.lightBlue,
-//           size: 22.0,
+//           size: ((2.980 * height) / 100),
 //         ),
 //         disabledBorder: _buildTextFieldOutlineInputBorder(),
 //         focusedBorder: _buildTextFieldOutlineInputBorder(),
@@ -162,16 +162,16 @@
 //         border: _buildTextFieldOutlineInputBorder(),
 //         enabledBorder: _buildTextFieldOutlineInputBorder(),
 //         contentPadding: EdgeInsets.only(
-//           left: 14.0,
-//           right: 14.0,
-//           top: 16.0,
-//           bottom: 16.0,
+//           left: ((1.896 * height) / 100),
+//           right: ((1.896 * height) / 100),
+//           top: ((2.167 * height) / 100),
+//           bottom: ((2.167 * height) / 100),
 //         ),
 //         filled: true,
 //         fillColor: CustomColors.grey,
 //         hintText: "Name",
 //         hintStyle: TextStyle(
-//           fontSize: 15.0,
+//           fontSize: ((2.032 * height) / 100),
 //           color: Colors.grey,
 //         ),
 //       ),
@@ -190,17 +190,17 @@
 //         bottom: MediaQuery.of(context).viewInsets.bottom,
 //       ),
 //       keyboardType: TextInputType.emailAddress,
-//       cursorWidth: 0.5,
+//       cursorWidth: ((0.067 * height) / 100),
 //       cursorColor: Colors.white,
 //       style: TextStyle(
-//         fontSize: 15.0,
+//         fontSize: ((2.032 * height) / 100),
 //         color: Colors.white,
 //       ),
 //       decoration: InputDecoration(
 //         prefixIcon: Icon(
 //           Icons.email,
 //           color: Colors.lightBlue,
-//           size: 22.0,
+//           size: ((2.980 * height) / 100),
 //         ),
 //         disabledBorder: _buildTextFieldOutlineInputBorder(),
 //         focusedBorder: _buildTextFieldOutlineInputBorder(),
@@ -209,16 +209,16 @@
 //         border: _buildTextFieldOutlineInputBorder(),
 //         enabledBorder: _buildTextFieldOutlineInputBorder(),
 //         contentPadding: EdgeInsets.only(
-//           left: 14.0,
-//           right: 14.0,
-//           top: 16.0,
-//           bottom: 16.0,
+//           left: ((1.896 * height) / 100),
+//           right: ((1.896 * height) / 100),
+//           top: ((2.167 * height) / 100),
+//           bottom: ((2.167 * height) / 100),
 //         ),
 //         filled: true,
 //         fillColor: CustomColors.grey,
 //         hintText: "Email",
 //         hintStyle: TextStyle(
-//           fontSize: 15.0,
+//           fontSize: ((2.032 * height) / 100),
 //           color: Colors.grey,
 //         ),
 //       ),
@@ -237,17 +237,17 @@
 //         bottom: MediaQuery.of(context).viewInsets.bottom,
 //       ),
 //       keyboardType: TextInputType.phone,
-//       cursorWidth: 0.5,
+//       cursorWidth: ((0.067 * height) / 100),
 //       cursorColor: Colors.white,
 //       style: TextStyle(
-//         fontSize: 15.0,
+//         fontSize: ((2.032 * height) / 100),
 //         color: Colors.white,
 //       ),
 //       decoration: InputDecoration(
 //         prefixIcon: Icon(
 //           Icons.phone,
 //           color: Colors.lightBlue,
-//           size: 22.0,
+//           size: ((2.980 * height) / 100),
 //         ),
 //         disabledBorder: _buildTextFieldOutlineInputBorder(),
 //         focusedBorder: _buildTextFieldOutlineInputBorder(),
@@ -256,16 +256,16 @@
 //         border: _buildTextFieldOutlineInputBorder(),
 //         enabledBorder: _buildTextFieldOutlineInputBorder(),
 //         contentPadding: EdgeInsets.only(
-//           left: 14.0,
-//           right: 14.0,
-//           top: 16.0,
-//           bottom: 16.0,
+//           left: ((1.896 * height) / 100),
+//           right: ((1.896 * height) / 100),
+//           top: ((2.167 * height) / 100),
+//           bottom: ((2.167 * height) / 100),
 //         ),
 //         filled: true,
 //         fillColor: CustomColors.grey,
 //         hintText: "Phone",
 //         hintStyle: TextStyle(
-//           fontSize: 15.0,
+//           fontSize: ((2.032 * height) / 100),
 //           color: Colors.grey,
 //         ),
 //       ),
@@ -290,22 +290,22 @@
 //             bottom: MediaQuery.of(context).viewInsets.bottom,
 //           ),
 //           keyboardType: TextInputType.text,
-//           cursorWidth: 0.5,
+//           cursorWidth: ((0.067 * height) / 100),
 //           cursorColor: Colors.white,
 //           style: TextStyle(
-//             fontSize: 15.0,
+//             fontSize: ((2.032 * height) / 100),
 //             color: Colors.white,
 //           ),
 //           decoration: InputDecoration(
 //             prefixIcon: Icon(
 //               Icons.security,
 //               color: Colors.lightBlue,
-//               size: 22.0,
+//               size: ((2.980 * height) / 100),
 //             ),
 //             suffixIcon: GestureDetector(
 //               child: Icon(
 //                 Icons.remove_red_eye,
-//                 size: 20.0,
+//                 size: ((2.709 * height) / 100),
 //                 color: viewPwdStatusnapshot.data
 //                     ? Colors.white
 //                     : CustomColors.darkestGrey,
@@ -321,16 +321,16 @@
 //             border: _buildTextFieldOutlineInputBorder(),
 //             enabledBorder: _buildTextFieldOutlineInputBorder(),
 //             contentPadding: EdgeInsets.only(
-//               left: 14.0,
-//               right: 14.0,
-//               top: 16.0,
-//               bottom: 16.0,
+//               left: ((1.896 * height) / 100),
+//               right: ((1.896 * height) / 100),
+//               top: ((2.167 * height) / 100),
+//               bottom: ((2.167 * height) / 100),
 //             ),
 //             filled: true,
 //             fillColor: CustomColors.grey,
 //             hintText: "Password",
 //             hintStyle: TextStyle(
-//               fontSize: 15.0,
+//               fontSize: ((2.032 * height) / 100),
 //               color: Colors.grey,
 //             ),
 //           ),
@@ -364,7 +364,7 @@
 //             "${response["error"]}",
 //             style: TextStyle(
 //               color: Colors.white,
-//               fontSize: 15.0,
+//               fontSize: ((2.032 * height) / 100),
 //             ),
 //           ),
 //           duration: Duration(seconds: 3),
@@ -420,7 +420,7 @@
 //                                   icon: Icon(
 //                                     Icons.arrow_back_ios,
 //                                     color: Colors.white,
-//                                     size: 20.0,
+//                                     size: ((2.709 * height) / 100),
 //                                   ),
 //                                   onPressed: () {
 //                                     Navigator.pop(context);
@@ -430,7 +430,7 @@
 //                                   "Signup",
 //                                   style: TextStyle(
 //                                     color: Colors.white,
-//                                     fontSize: 15.0,
+//                                     fontSize: ((2.032 * height) / 100),
 //                                   ),
 //                                 ),
 //                               ],
@@ -469,7 +469,7 @@
 //                                 //   child: Icon(
 //                                 //     Icons.add_a_photo,
 //                                 //     color: Colors.lightBlue,
-//                                 //     size: 25.0,
+//                                 //     size: ((3.386 * height) / 100),
 //                                 //   ),
 //                                 // ),
 //                               ),
@@ -483,7 +483,7 @@
 //                                   child: Icon(
 //                                     Icons.add_a_photo,
 //                                     color: Colors.lightBlue,
-//                                     size: 25.0,
+//                                     size: ((3.386 * height) / 100),
 //                                   ),
 //                                 ),
 //                               ),
@@ -498,9 +498,9 @@
 //           Expanded(
 //             child: Container(
 //               padding: EdgeInsets.only(
-//                 top: 25.0,
-//                 right: 30.0,
-//                 left: 30.0,
+//                 top: ((3.386 * height) / 100),
+//                 right: ((4.064 * height) / 100),
+//                 left: ((4.064 * height) / 100),
 //               ),
 //               child: Column(
 //                 mainAxisAlignment: MainAxisAlignment.start,
@@ -508,15 +508,15 @@
 //                 children: <Widget>[
 //                   _buildNameTextFieldWidget(),
 //                   SizedBox(
-//                     height: 15.0,
+//                     height: ((2.032 * height) / 100),
 //                   ),
 //                   _buildEmailTextFieldWidget(),
 //                   SizedBox(
-//                     height: 15.0,
+//                     height: ((2.032 * height) / 100),
 //                   ),
 //                   _buildPhoneTextFieldWidget(),
 //                   SizedBox(
-//                     height: 15.0,
+//                     height: ((2.032 * height) / 100),
 //                   ),
 //                   _buildPasswordTextFieldWidget(),
 //                 ],
@@ -542,7 +542,7 @@
 //                     return !signupStatusSnapshot.data
 //                         ? FloatingActionButton(
 //                             mini: true,
-//                             elevation: 10.0,
+//                             elevation: ((1.354 * height) / 100),
 //                             backgroundColor: Colors.white,
 //                             child: Icon(
 //                               Icons.arrow_forward_ios,
@@ -551,7 +551,7 @@
 //                             onPressed: _signup,
 //                           )
 //                         : Loading(
-//                             size: 25.0,
+//                             size: ((3.386 * height) / 100),
 //                             indicator: BallSpinFadeLoaderIndicator(),
 //                           );
 //                   },

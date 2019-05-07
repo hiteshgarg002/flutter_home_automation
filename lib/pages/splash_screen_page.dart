@@ -13,6 +13,7 @@ class SplashScreenPage extends StatefulWidget {
 
 class _SplashScreenPageState extends State<SplashScreenPage> {
   SharedPreferences _prefs;
+  double height, width;
 
   @override
   void initState() {
@@ -91,8 +92,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+ height = MediaQuery.of(context).size.height;
+  width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(CustomColors.darkGrey);
 

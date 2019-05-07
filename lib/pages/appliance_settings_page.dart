@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_home_automation/networks/network_calls.dart';
 import 'package:flutter_home_automation/utils/StatusNavBarColorChanger.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
-import 'package:xlive_switch/xlive_switch.dart';
 
 class ApplianceSettingsPage extends StatefulWidget {
   final Map applianceData;
@@ -13,7 +12,8 @@ class ApplianceSettingsPage extends StatefulWidget {
 }
 
 class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
-  Widget _buildCustomAppBarWidget(double height, double width) {
+  double height, width;
+  Widget _buildCustomAppBarWidget() {
     return PreferredSize(
       preferredSize: Size(width, height * 0.25),
       child: Stack(
@@ -21,12 +21,12 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(left: ((1.083 * height) / 100)),
               child: IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios,
                   color: Colors.black,
-                  size: 25.0,
+                  size: ((3.386 * height) / 100),
                 ),
                 onPressed: () {
                   StatusNavBarColorChanger.changeNavBarColor(CustomColors.grey);
@@ -38,16 +38,16 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
           Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: EdgeInsets.only(right: 8.0),
+              padding: EdgeInsets.only(right: ((1.083 * height) / 100)),
               child: OutlineButton(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(((2.032 * height) / 100)),
                 ),
                 child: Text(
                   "Delete",
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
+                    fontSize: ((1.896 * height) / 100),
                   ),
                 ),
                 highlightColor: Colors.white54,
@@ -60,24 +60,14 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
                   Navigator.pop(context);
                 },
               ),
-              // child: IconButton(
-              //   tooltip: "Delete Room",
-              //   icon: Icon(
-              //     Icons.delete_sweep,
-              //     color: Colors.black,
-              //     size: 27.0,
-              //   ),
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //     NetworkCalls.deteleAppliance(widget.applianceData);
-              //   },
-              // ),
             ),
           ),
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(top: 60.0, left: 25.0),
+              padding: EdgeInsets.only(
+                  top: ((8.128 * height) / 100),
+                  left: ((3.386 * height) / 100)),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -92,7 +82,7 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
                     ),
                   ),
                   SizedBox(
-                    width: 5.0,
+                    width: ((0.677 * height) / 100),
                   ),
                   Chip(
                     backgroundColor: Colors.black,
@@ -100,7 +90,7 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
                     label: Text("Lamp"),
                     labelStyle: TextStyle(
                       color: Colors.white,
-                      fontSize: 14.0,
+                      fontSize: ((1.896 * height) / 100),
                     ),
                   )
                 ],
@@ -114,14 +104,14 @@ class _ApplianceSettingsPageState extends State<ApplianceSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(Colors.white);
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: _buildCustomAppBarWidget(width, height),
+      appBar: _buildCustomAppBarWidget(),
     );
   }
 

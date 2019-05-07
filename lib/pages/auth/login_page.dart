@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController;
   GlobalKey<ScaffoldState> _sfKey;
   SharedPreferences _prefs;
+  double height, width;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
 
   OutlineInputBorder _buildTextFieldOutlineInputBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25.0),
+      borderRadius: BorderRadius.circular(((3.386 * height) / 100)),
       borderSide: BorderSide(
         width: 1.0,
         color: Colors.transparent,
@@ -83,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
             "${response["error"]}",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 15.0,
+              fontSize: ((2.032 * height) / 100),
             ),
           ),
           duration: Duration(seconds: 3),
@@ -129,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                   "LOGIN",
                   style: TextStyle(
                     color: Colors.lightBlue,
-                    fontSize: 15.0,
+                    fontSize: ((2.032 * height) / 100),
                   ),
                 ),
                 onTap: () {
@@ -148,17 +149,17 @@ class _LoginPageState extends State<LoginPage> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       keyboardType: TextInputType.text,
-      cursorWidth: 0.5,
+      cursorWidth: ((0.067 * height) / 100),
       cursorColor: Colors.white,
       style: TextStyle(
-        fontSize: 15.0,
+        fontSize: ((2.032 * height) / 100),
         color: Colors.white,
       ),
       decoration: InputDecoration(
         prefixIcon: Icon(
           Icons.email,
           color: Colors.lightBlue,
-          size: 22.0,
+          size: ((2.980 * height) / 100),
         ),
         disabledBorder: _buildTextFieldOutlineInputBorder(),
         focusedBorder: _buildTextFieldOutlineInputBorder(),
@@ -167,16 +168,16 @@ class _LoginPageState extends State<LoginPage> {
         border: _buildTextFieldOutlineInputBorder(),
         enabledBorder: _buildTextFieldOutlineInputBorder(),
         contentPadding: EdgeInsets.only(
-          left: 14.0,
-          right: 14.0,
-          top: 16.0,
-          bottom: 16.0,
+          left: ((1.896 * height) / 100),
+          right: ((1.896 * height) / 100),
+          top: ((2.167 * height) / 100),
+          bottom: ((2.167 * height) / 100),
         ),
         filled: true,
         fillColor: CustomColors.grey,
         hintText: "Email or Phone",
         hintStyle: TextStyle(
-          fontSize: 15.0,
+          fontSize: ((2.032 * height) / 100),
           color: Colors.grey,
         ),
       ),
@@ -201,22 +202,22 @@ class _LoginPageState extends State<LoginPage> {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           keyboardType: TextInputType.text,
-          cursorWidth: 0.5,
+          cursorWidth: ((0.067 * height) / 100),
           cursorColor: Colors.white,
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: ((2.032 * height) / 100),
             color: Colors.white,
           ),
           decoration: InputDecoration(
             prefixIcon: Icon(
               Icons.security,
               color: Colors.lightBlue,
-              size: 22.0,
+              size: ((2.980 * height) / 100),
             ),
             suffixIcon: GestureDetector(
               child: Icon(
                 Icons.remove_red_eye,
-                size: 20.0,
+                size: ((2.709 * height) / 100),
                 color: viewPwdStatusnapshot.data
                     ? Colors.white
                     : CustomColors.darkestGrey,
@@ -232,16 +233,16 @@ class _LoginPageState extends State<LoginPage> {
             border: _buildTextFieldOutlineInputBorder(),
             enabledBorder: _buildTextFieldOutlineInputBorder(),
             contentPadding: EdgeInsets.only(
-              left: 14.0,
-              right: 14.0,
-              top: 16.0,
-              bottom: 16.0,
+              left: ((1.896 * height) / 100),
+              right: ((1.896 * height) / 100),
+              top: ((2.167 * height) / 100),
+              bottom: ((2.167 * height) / 100),
             ),
             filled: true,
             fillColor: CustomColors.grey,
             hintText: "Password",
             hintStyle: TextStyle(
-              fontSize: 15.0,
+              fontSize: ((2.032 * height) / 100),
               color: Colors.grey,
             ),
           ),
@@ -254,7 +255,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildForgotPwdWidget(double width) {
+  Widget _buildForgotPwdWidget() {
     return Container(
       width: width,
       alignment: AlignmentDirectional.centerEnd,
@@ -265,7 +266,7 @@ class _LoginPageState extends State<LoginPage> {
             "Forgot password!",
             style: TextStyle(
               color: Colors.white30,
-              fontSize: 14.0,
+              fontSize: ((1.896 * height) / 100),
               fontWeight: FontWeight.normal,
             ),
           ),
@@ -275,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildTopWidget(double height, double width) {
+  Widget _buildTopWidget() {
     return Container(
       height: height * 0.43,
       child: Stack(
@@ -314,9 +315,9 @@ class _LoginPageState extends State<LoginPage> {
           //       child: Icon(
           //         Icons.add,
           //         color: Colors.white,
-          //         size: 22.0,
+          //         size: ((2.980 * height) / 100),
           //       ),
-          //       elevation: 10.0,
+          //       elevation: ((1.354 * height) / 100),
           //       onPressed: () {
           //         Navigate.navigate(
           //           context,
@@ -338,7 +339,7 @@ class _LoginPageState extends State<LoginPage> {
                 "Login",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                 ),
               ),
             ),
@@ -348,7 +349,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildMiddleWidget(double height, double width) {
+  Widget _buildMiddleWidget() {
     return Container(
       height: height * 0.37,
       child: Column(
@@ -356,29 +357,29 @@ class _LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           SizedBox(
-            height: 20.0,
+            height: ((2.709 * height) / 100),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.symmetric(horizontal: ((4.064 * height) / 100)),
             child: _buildEmailOrPhoneTextFieldWidget(),
           ),
           SizedBox(
-            height: 10.0,
+            height: ((1.354 * height) / 100),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            padding: EdgeInsets.symmetric(horizontal: ((4.064 * height) / 100)),
             child: _buildPasswordTextFieldWidget(),
           ),
           SizedBox(
-            height: 20.0,
+            height: ((2.709 * height) / 100),
           ),
-          _buildForgotPwdWidget(width),
+          _buildForgotPwdWidget(),
         ],
       ),
     );
   }
 
-  Widget _buildBottomWidget(double height, double width) {
+  Widget _buildBottomWidget() {
     return CustomPaint(
       painter: LoginSignupBottomCustomPainter(),
       child: Container(
@@ -398,8 +399,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(CustomColors.grey);
 
@@ -415,9 +416,9 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            _buildTopWidget(height, width),
-            _buildMiddleWidget(height, width),
-            _buildBottomWidget(height, width),
+            _buildTopWidget(),
+            _buildMiddleWidget(),
+            _buildBottomWidget(),
           ],
         ),
       ),

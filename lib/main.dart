@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_home_automation/blocs/auth_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/home_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_home_automation/utils/custom_colors.dart';
 import 'package:flutter_home_automation/utils/route_handler.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:navigate/navigate.dart';
-import './utils/native_calls.dart';
 
 void registerRoutes() {
   Navigate.registerRoutes(
@@ -20,12 +20,20 @@ void registerRoutes() {
 }
 
 void main() async {
+  // registering routes
   registerRoutes();
 
+  // hiding statusbar
   await FlutterStatusbarManager.setHidden(
     true,
     animation: StatusBarAnimation.SLIDE,
   );
+
+  // Setting app orientation to "Portrait"
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   // await FlutterStatusbarManager.setFullscreen(true);
   // NativeCalls.startMotionDetectionSocketIOService();
@@ -43,7 +51,7 @@ void main() async {
       //   bloc: AuthPageBloc(),
       //   child: LoginPage(),
       // ),
-      home: SplashScreenPage(),
+      home: SplashScreenPage(),                                                           
       // home: BlocProvider(
       //   bloc: RoomPageBloc(),
       //   child: RoomPage(),

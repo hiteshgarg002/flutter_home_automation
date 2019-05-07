@@ -13,6 +13,7 @@ class LightIntensityPage extends StatefulWidget {
 class _LightIntensityPageState extends State<LightIntensityPage> {
   static final GlobalKey<AnimatedCircularChartState> _chartKey1 =
       GlobalKey<AnimatedCircularChartState>();
+      double height, width;
 
   final String _lightIntensityHeroTag = "LIGHT_INTENSITY";
 
@@ -49,8 +50,8 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+     height = MediaQuery.of(context).size.height;
+  width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(
       CustomColors.darkGrey,
@@ -85,7 +86,7 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
                       "Light Intensity",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15.0,
+                        fontSize: ((2.032 * height) / 100),
                       ),
                     ),
                   ],
@@ -100,17 +101,17 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
         physics: AlwaysScrollableScrollPhysics(),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(((2.709 * height) / 100)),
             child: Chip(
               backgroundColor: Colors.white,
-              elevation: 5.0,
+              elevation: ((0.677 * height) / 100),
               labelStyle: TextStyle(
                 color: Colors.black,
               ),
               label: Text(
                 "Home",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                 ),
               ),
             ),
@@ -135,7 +136,7 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
                     holeLabel: "$_percentage%",
                     labelStyle: TextStyle(
                       color: Colors.white,
-                      fontSize: 18.0,
+                      fontSize: ((2.438 * height) / 100),
                     ),
                     initialChartData: data,
                     holeRadius: 70.0,
@@ -150,7 +151,7 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
                         stroke: PaintOptions.stroke(
                           color: Colors.green,
                           strokeCap: StrokeCap.round,
-                          strokeWidth: 1.5,
+                          strokeWidth: ((0.203 * height) / 100),
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment(
@@ -171,7 +172,7 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
                             strokeCap: StrokeCap.round,
                           ),
                           shape: MarkerShapes.circle,
-                          size: 5.0,
+                          size: ((0.677 * height) / 100),
                         ),
                         curve: CardinalSpline(),
                         yAxis: ChartAxis(
@@ -197,10 +198,10 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
                       ),
                     ],
                     chartPadding: EdgeInsets.fromLTRB(
-                      40.0,
-                      20.0,
-                      20.0,
-                      20.0,
+                      ((5.418 * height) / 100),
+                      ((2.709 * height) / 100),
+                      ((2.709 * height) / 100),
+                      ((2.709 * height) / 100),
                     ),
                   ),
                 ],
@@ -208,7 +209,7 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
             ),
           ),
           SizedBox(
-            height: 10.0,
+            height: ((1.354 * height) / 100),
           ),
           Center(
             child: Hero(
@@ -223,32 +224,32 @@ class _LightIntensityPageState extends State<LightIntensityPage> {
           ),
           Padding(
             padding: EdgeInsets.all(
-              20.0,
+              ((2.709 * height) / 100),
             ),
             child: Text(
               "Light Intensity",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20.0,
+                fontSize: ((2.709 * height) / 100),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: ((2.709 * height) / 100),
             ),
             child: Text(
               "Light intensity refers to the strength or amount of light produced by a specific lamp source. It is the measure of the wavelength-weighted power emitted by a light source.\n\nLight intensity varies depending on the lamp source and there are specific high and low light intensity fixtures, lamps, and bulbs. For example, high intensity discharge lamps emit a high light intensity, while fluorescent lamps are considered a “cool” or low intensity light source.",
               style: TextStyle(
                 color: Colors.grey,
                 letterSpacing: 1.2,
-                fontSize: 16.0,
+                fontSize: ((2.167 * height) / 100),
               ),
             ),
           ),
           SizedBox(
-            height: 15.0,
+            height: ((2.032 * height) / 100),
           ),
         ],
       ),

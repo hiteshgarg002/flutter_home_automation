@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/blocs/room_page_bloc.dart';
 import 'package:flutter_home_automation/models/appliance_model.dart';
 import 'package:flutter_home_automation/models/room_model.dart';
-import 'package:flutter_home_automation/networks/dio_api.dart';
 import 'package:flutter_home_automation/networks/network_calls.dart';
 import 'package:flutter_home_automation/utils/StatusNavBarColorChanger.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
@@ -16,9 +14,11 @@ import 'package:xlive_switch/xlive_switch.dart';
 
 class RoomPage extends StatefulWidget {
   final String roomId;
+  final Function reloadRooms;
 
   RoomPage({
     @required this.roomId,
+    @required this.reloadRooms,
   });
 
   @override
@@ -32,6 +32,7 @@ class _RoomPageState extends State<RoomPage> {
   PageController _appliancesPageContoller;
   RoomModel _roomModel;
   SharedPreferences _prefs;
+  double height, width;
 
   @override
   void initState() {
@@ -56,6 +57,7 @@ class _RoomPageState extends State<RoomPage> {
 
   void _reloadRoom() {
     _roomPageBloc.setLoadingStatus(true);
+    widget.reloadRooms();
     _getRoom();
   }
 
@@ -78,20 +80,20 @@ class _RoomPageState extends State<RoomPage> {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          radius: 25.0,
+          radius: ((3.386 * height) / 100),
           backgroundColor: Colors.lightBlue,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(((1.083 * height) / 100)),
             child: Image.asset(
               "assets/thermometer.png",
               color: Colors.white,
-              height: 30.0,
-              width: 30.0,
+              height: ((4.064 * height) / 100),
+              width: ((4.064 * height) / 100),
             ),
           ),
         ),
         SizedBox(
-          width: 5.0,
+          width: ((0.677 * height) / 100),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +106,7 @@ class _RoomPageState extends State<RoomPage> {
                   "50",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22.0,
+                    fontSize: ((2.980 * height) / 100),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -112,7 +114,7 @@ class _RoomPageState extends State<RoomPage> {
                   "%",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    fontSize: ((2.438 * height) / 100),
                   ),
                 ),
               ],
@@ -133,20 +135,20 @@ class _RoomPageState extends State<RoomPage> {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          radius: 25.0,
+          radius: ((3.386 * height) / 100),
           backgroundColor: Colors.lightBlue,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(((1.083 * height) / 100)),
             child: Image.asset(
               "assets/thermometer.png",
               color: Colors.white,
-              height: 30.0,
-              width: 30.0,
+              height: ((4.064 * height) / 100),
+              width: ((4.064 * height) / 100),
             ),
           ),
         ),
         SizedBox(
-          width: 5.0,
+          width: ((0.677 * height) / 100),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -159,7 +161,7 @@ class _RoomPageState extends State<RoomPage> {
                   "25",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22.0,
+                    fontSize: ((2.980 * height) / 100),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -167,7 +169,7 @@ class _RoomPageState extends State<RoomPage> {
                   "°C",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    fontSize: ((2.438 * height) / 100),
                   ),
                 ),
               ],
@@ -184,7 +186,7 @@ class _RoomPageState extends State<RoomPage> {
     );
   }
 
-  Widget _buildCustomAppBarWidget(double width, double height) {
+  Widget _buildCustomAppBarWidget() {
     return PreferredSize(
       preferredSize: Size(width, height * 0.335),
       child: Container(
@@ -192,10 +194,10 @@ class _RoomPageState extends State<RoomPage> {
           color: CustomColors.darkGrey,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(
-              45.0,
+              ((6.096 * height) / 100),
             ),
             bottomRight: Radius.circular(
-              45.0,
+              ((6.096 * height) / 100),
             ),
           ),
         ),
@@ -205,13 +207,13 @@ class _RoomPageState extends State<RoomPage> {
               alignment: Alignment.topLeft,
               child: Padding(
                 padding: EdgeInsets.only(
-                  left: 7.0,
+                  left: ((0.948 * height) / 100),
                 ),
                 child: IconButton(
                   icon: Icon(
                     Icons.arrow_back_ios,
                     color: Colors.white,
-                    size: 25.0,
+                    size: ((3.386 * height) / 100),
                   ),
                   onPressed: () {
                     Navigator.pop(context);
@@ -223,12 +225,12 @@ class _RoomPageState extends State<RoomPage> {
               alignment: Alignment.topRight,
               child: Padding(
                 padding: EdgeInsets.only(
-                  right: 7.0,
+                  right: ((0.948 * height) / 100),
                 ),
                 child: AvatarGlow(
                   startDelay: Duration(milliseconds: 0),
                   glowColor: Colors.white,
-                  endRadius: 28.0,
+                  endRadius: ((3.793 * height) / 100),
                   duration: Duration(milliseconds: 2000),
                   repeat: true,
                   showTwoGlows: true,
@@ -240,7 +242,7 @@ class _RoomPageState extends State<RoomPage> {
                       child: Icon(
                         Icons.timeline,
                         color: Colors.white,
-                        size: 25.0,
+                        size: ((3.386 * height) / 100),
                       ),
                     ),
                     onPressed: () {
@@ -258,7 +260,8 @@ class _RoomPageState extends State<RoomPage> {
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: EdgeInsets.only(top: 60.0, left: 25.0),
+                padding:
+                    EdgeInsets.only(top: ((8.128 * height) / 100), left: ((3.386 * height) / 100),),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -266,17 +269,18 @@ class _RoomPageState extends State<RoomPage> {
                       "${_roomModel.roomName}",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 30.0,
+                        fontSize: ((4.064 * height) / 100),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(
-                      height: 5.0,
+                      height: ((0.677 * height) / 100),
                     ),
                     Text(
                       "1 person has access",
                       style: TextStyle(
                         color: Colors.white,
+                        fontSize: ((1.896 * height) / 100),
                       ),
                     )
                   ],
@@ -286,7 +290,7 @@ class _RoomPageState extends State<RoomPage> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 40.0),
+                padding: EdgeInsets.only(bottom: ((5.418* height) / 100)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
@@ -316,7 +320,7 @@ class _RoomPageState extends State<RoomPage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
+                        fontSize: ((1.896 * height) / 100),
                       ),
                     ),
                     XlivSwitch(
@@ -341,7 +345,7 @@ class _RoomPageState extends State<RoomPage> {
                     icon: Icon(
                       Icons.add_circle,
                       color: Colors.white,
-                      size: 25.0,
+                      size: ((3.386 * height) / 100),
                     ),
                     onPressed: () {
                       Navigate.navigate(
@@ -410,7 +414,7 @@ class _RoomPageState extends State<RoomPage> {
               "${_roomModel.applianceList[index].applianceName}",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16.0,
+                fontSize: ((2.167 * height) / 100),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -420,7 +424,7 @@ class _RoomPageState extends State<RoomPage> {
           alignment: Alignment.bottomRight,
           child: IconButton(
             icon: Icon(Icons.settings),
-            iconSize: 24.0,
+            iconSize: ((3.251 * height) / 100),
             color: Colors.black,
             onPressed: () {
               Navigate.navigate(
@@ -443,15 +447,15 @@ class _RoomPageState extends State<RoomPage> {
             ? Align(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 5.0),
+                  padding: EdgeInsets.only(top: ((0.677 * height) / 100)),
                   child: Chip(
                     backgroundColor: Colors.amber,
-                    padding: EdgeInsets.all(5.0),
+                    padding: EdgeInsets.all(((0.677 * height) / 100)),
                     label: Text(
                       "16%",
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 20.0,
+                          fontSize: ((2.709 * height) / 100),
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -468,24 +472,27 @@ class _RoomPageState extends State<RoomPage> {
     );
   }
 
-  Widget _buildPageViewCardWidget(int index, double height, String imagePath) {
+  Widget _buildPageViewCardWidget(int index, String imagePath) {
     return StreamBuilder<double>(
       initialData: 0,
       stream: _roomPageBloc.getPageOffSet,
       builder:
           (BuildContext context, AsyncSnapshot<double> pageOffSetSnapshot) {
         return Card(
-          margin: EdgeInsets.only(left: 12.0, right: 12.0, bottom: 24.0),
-          elevation: 9,
+          margin: EdgeInsets.only(
+              left: ((1.625 * height) / 100),
+              right: ((1.625 * height) / 100),
+              bottom: ((3.251 * height) / 100)),
+          elevation: ((1.219* height) / 100),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-              32.0,
+              ((4.334* height) / 100),
             ),
           ),
           child: Column(
             children: <Widget>[
               ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(((4.334* height) / 100))),
                 child: Container(
                   height: height * 0.28,
                   decoration: BoxDecoration(
@@ -499,16 +506,17 @@ class _RoomPageState extends State<RoomPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: ((1.083 * height) / 100)),
               Expanded(
                 child: GestureDetector(
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(bottom: 8.0, right: 8.0, left: 8.0),
+                    padding: EdgeInsets.only(
+                        bottom: ((1.083 * height) / 100),
+                        right: ((1.083 * height) / 100),
+                        left: ((1.083 * height) / 100)),
                     child: _buildLowerCardWidget(index),
                   ),
                   onTap: () {
-                    print("Pressed GD");
                     if (_roomModel.applianceList.length == 1) {
                       Navigate.navigate(
                         context,
@@ -521,7 +529,7 @@ class _RoomPageState extends State<RoomPage> {
                           "arduinoId":
                               _roomModel.applianceList[index].arduinoId,
                           "pin": _roomModel.applianceList[index].pin,
-                           "reloadRoom": _reloadRoom,
+                          "reloadRoom": _reloadRoom,
                         },
                       );
                     }
@@ -538,7 +546,7 @@ class _RoomPageState extends State<RoomPage> {
   Widget _buildAddApplianceButtonWidget() {
     return OutlineButton.icon(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(((2.032 * height) / 100)),
       ),
       borderSide: BorderSide(
         color: Colors.white,
@@ -556,13 +564,13 @@ class _RoomPageState extends State<RoomPage> {
         "Add appliance",
         style: TextStyle(
           color: Colors.white,
-          fontSize: 14.0,
+          fontSize: ((1.896 * height) / 100),
         ),
       ),
       highlightColor: Colors.white30,
       highlightedBorderColor: Colors.lightBlue,
       splashColor: Colors.lightBlue,
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.all(((1.625 * height) / 100)),
       onPressed: () {
         Navigate.navigate(
           context,
@@ -579,8 +587,10 @@ class _RoomPageState extends State<RoomPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+
+    print("45 is the ${(45 * 100) / height}% of Height :- $height");
 
     StatusNavBarColorChanger.changeNavBarColor(CustomColors.grey);
 
@@ -595,21 +605,24 @@ class _RoomPageState extends State<RoomPage> {
           return !loadingSnapshot.data
               ? Scaffold(
                   backgroundColor: CustomColors.grey,
-                  appBar: _buildCustomAppBarWidget(width, height),
+                  appBar: _buildCustomAppBarWidget(),
                   body: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Padding(
-                        padding:
-                            EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
+                        padding: EdgeInsets.only(
+                            top: ((1.354 * height) / 100),
+                            right: ((2.709 * height) / 100),
+                            left: ((2.709 * height) / 100)),
                         child: _buildModeSwitchAddApplianceWidget(),
                       ),
                       SizedBox(
                         height: height * 0.55,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 30.0),
+                          padding:
+                              EdgeInsets.only(top: ((4.064 * height) / 100)),
                           child: _roomModel.applianceList.isNotEmpty
                               ? StreamBuilder<double>(
                                   initialData: 0,
@@ -643,7 +656,6 @@ class _RoomPageState extends State<RoomPage> {
 
                                         return _buildPageViewCardWidget(
                                           index,
-                                          height,
                                           imagePath,
                                         );
                                       },

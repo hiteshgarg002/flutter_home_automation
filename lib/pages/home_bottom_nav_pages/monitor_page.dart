@@ -1,17 +1,18 @@
+import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_home_automation/blocs/home_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/monitor_page_bloc.dart';
+import 'package:flutter_home_automation/blocs/profile_dialog_bloc.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/networks/dio_api.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
-import 'package:loading/loading.dart';
+import 'package:flutter_home_automation/widgets/profile_dialog.dart';
 import 'package:navigate/navigate.dart';
 import 'package:pigment/pigment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:loading/indicator/ball_scale_multiple_indicator.dart';
 
 class MonitorPage extends StatefulWidget {
   @override
@@ -28,8 +29,8 @@ class _MonitorPageState extends State<MonitorPage> {
   final String _humidityHeroTag = "HUMIDITY";
   final String _lightIntensityHeroTag = "LIGHT_INTENSITY";
   SharedPreferences _prefs;
-  // String _displayName;
-  // String _photoUrl;
+  double height, width;
+  SocketIO _socketIO;
 
   @override
   void initState() {
@@ -38,19 +39,60 @@ class _MonitorPageState extends State<MonitorPage> {
     _homePageBloc = BlocProvider.of<HomePageBloc>(context);
     _monitorPageBloc = BlocProvider.of<MonitorPageBloc>(context);
 
-    _setUpSharedPreferences();
+    _getReloadPhotoIO();
   }
 
   Future _setUpSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
 
     _monitorPageBloc.setSharedPreferences(_prefs);
-
-    // _photoUrl = "${DioAPI.baseURL}/${_prefs.getString("photoUrl")}";
-    // _displayName = _prefs.getString("name").split(" ")[0];
   }
 
-  Widget _buildHumidityCardWidget(double height) {
+  Future<Null> _getReloadPhotoIO() async {
+    await _setUpSharedPreferences();
+
+    SocketIOManager manager = SocketIOManager();
+    _socketIO = await manager.createInstance('${DioAPI.baseURL}');
+
+    _socketIO.onConnect((dynamic data) {
+      print("SocketIO Connected :- MonitorPage");
+      _socketIO.emit("join", [_prefs.getString("userId")]);
+    });
+
+    _socketIO.onReconnect((dynamic data) {
+      _socketIO.emit("join", [_prefs.getString("userId")]);
+    });
+
+    _socketIO.onConnectTimeout((dynamic data) {
+      print("MonitorPage :- SocketIO ConnectTimeout :- ${data.toString()}");
+      _socketIO.connect();
+    });
+
+    _socketIO.onReconnectError((dynamic error) {
+      print("MonitorPage :- SocketIO ReconnectError :- ${error.toString()}");
+    });
+
+    _socketIO.onError((dynamic error) {
+      print("MonitorPage :- SocketIO Error :- ${error.toString()}");
+      _socketIO.connect();
+    });
+
+    _socketIO.onReconnectFailed((dynamic error) {
+      print("MonitorPage :- SocketIO ReconnectFailed :- ${error.toString()}");
+    });
+
+    _socketIO.on("reloadPhoto", (dynamic data) {
+      _setUpSharedPreferences();
+    });
+
+    _socketIO.on("reloadName", (dynamic data) {
+      _setUpSharedPreferences();
+    });
+
+    _socketIO.connect();
+  }
+
+  Widget _buildHumidityCardWidget() {
     return Card(
       margin: EdgeInsets.all(
         ((1.354 * height) / 100),
@@ -142,7 +184,7 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildTemperatureCardWidget(double height) {
+  Widget _buildTemperatureCardWidget() {
     return Card(
       borderOnForeground: false,
       margin: EdgeInsets.all(
@@ -225,7 +267,7 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildMotionDetectionCardWidget(double height) {
+  Widget _buildMotionDetectionCardWidget() {
     return Card(
       borderOnForeground: false,
       margin: EdgeInsets.all(
@@ -305,7 +347,7 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildLightIntensityCardWidget(double height) {
+  Widget _buildLightIntensityCardWidget() {
     return Card(
       borderOnForeground: false,
       margin: EdgeInsets.all(
@@ -408,52 +450,55 @@ class _MonitorPageState extends State<MonitorPage> {
           String name = prefsSnapshot.data.getString("name");
 
           return GestureDetector(
-            child: photoUrl != ""
-                ? CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: bigRadius,
-                    child: CircleAvatar(
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: bigRadius,
+              child: photoUrl.isNotEmpty
+                  ? CircleAvatar(
                       radius: smallRadius,
                       backgroundColor: Colors.white,
                       backgroundImage: CachedNetworkImageProvider(
                         "${DioAPI.baseURL}/$photoUrl",
                         cacheManager: DefaultCacheManager(),
                       ),
-                    ),
-                  )
-                : CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: bigRadius,
-                    child: Center(
+                    )
+                  : Center(
                       child: Text(
-                        "${name.substring(0, 1)}${name.split(" ")[1].substring(0, 1)}",
+                        name.contains(" ")
+                            ? "${name.substring(0, 1)}${name.split(" ")[1].substring(0, 1)}"
+                            : "${name.substring(0, 1)}",
                         style: TextStyle(
                           color: CustomColors.darkestGrey,
-                          fontSize: 16.0,
+                          fontSize: ((2.167 * height) / 100),
                           letterSpacing: 1.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
+            ),
             onTap: () {
-              Navigate.navigate(
-                context,
-                "/profilePage",
-                transactionType: TransactionType.fromRight,
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider(
+                    bloc: ProfileDialogBloc(),
+                    child: ProfileDialog(),
+                  );
+                },
               );
             },
           );
         } else {
           return CircleAvatar(
-            backgroundColor: Colors.white,radius: bigRadius,
+            backgroundColor: Colors.white,
+            radius: bigRadius,
           );
         }
       },
     );
   }
 
-  Widget _buildCustomAppBar(double width, double height) {
+  Widget _buildCustomAppBar() {
     return FlexibleSpaceBar(
       collapseMode: CollapseMode.parallax,
       centerTitle: false,
@@ -475,8 +520,10 @@ class _MonitorPageState extends State<MonitorPage> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: _buildAppBarUserPhotoWidget(19.5, 18.5),
+                          padding: EdgeInsets.all(((1.083 * height) / 100)),
+                          child: _buildAppBarUserPhotoWidget(
+                              ((2.641 * height) / 100),
+                              ((2.506 * height) / 100)),
                         ),
                       ),
                       Align(
@@ -521,7 +568,8 @@ class _MonitorPageState extends State<MonitorPage> {
                     children: <Widget>[
                       Align(
                         alignment: Alignment.topLeft,
-                        child: _buildAppBarUserPhotoWidget(21.0, 20.0),
+                        child: _buildAppBarUserPhotoWidget(
+                            ((2.844 * height) / 100), ((2.709 * height) / 100)),
                       ),
                       Align(
                         alignment: Alignment.topRight,
@@ -563,10 +611,14 @@ class _MonitorPageState extends State<MonitorPage> {
                     stream: _monitorPageBloc.getSharedPreferences,
                     builder: (BuildContext context,
                         AsyncSnapshot<SharedPreferences> prefsSnapshot) {
+                      String name = prefsSnapshot.hasData
+                          ? prefsSnapshot.data.getString("name").contains(" ")
+                              ? "${prefsSnapshot.data.getString("name").split(" ")[0]}!"
+                              : "${prefsSnapshot.data.getString("name")}"
+                          : "";
+
                       return Text(
-                        prefsSnapshot.hasData
-                            ? "${prefsSnapshot.data.getString("name").split(" ")[0]}!"
-                            : "",
+                        name,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: ((2.709 * height) / 100),
@@ -624,7 +676,7 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildSliverAppBarWidget(double width, double height) {
+  Widget _buildSliverAppBarWidget() {
     return SliverAppBar(
       pinned: true,
       floating: true,
@@ -637,13 +689,13 @@ class _MonitorPageState extends State<MonitorPage> {
               ? _homePageBloc.setCollapsedAppBarStatus(true)
               : _homePageBloc.setCollapsedAppBarStatus(false);
 
-          return _buildCustomAppBar(width, height);
+          return _buildCustomAppBar();
         },
       ),
     );
   }
 
-  Widget _buildRoomDropDownWidget(double height) {
+  Widget _buildRoomDropDownWidget() {
     return DropdownButtonHideUnderline(
       child: DropdownButton(
         hint: Text("-- ROOM --"),
@@ -659,7 +711,7 @@ class _MonitorPageState extends State<MonitorPage> {
               label: Text(
                 "Home",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                   color: Colors.black,
                 ),
               ),
@@ -671,7 +723,7 @@ class _MonitorPageState extends State<MonitorPage> {
               label: Text(
                 "Living Room",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                   color: Colors.black,
                 ),
               ),
@@ -683,7 +735,7 @@ class _MonitorPageState extends State<MonitorPage> {
               label: Text(
                 "Dinning Room",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                   color: Colors.black,
                 ),
               ),
@@ -695,7 +747,7 @@ class _MonitorPageState extends State<MonitorPage> {
               label: Text(
                 "Kitchen",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                   color: Colors.black,
                 ),
               ),
@@ -707,7 +759,7 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildRoomDropDownSliverWidget(double width, double height) {
+  Widget _buildRoomDropDownSliverWidget() {
     return StreamBuilder<bool>(
       initialData: false,
       stream: _homePageBloc.getCollapsedAppBatStatus,
@@ -737,7 +789,7 @@ class _MonitorPageState extends State<MonitorPage> {
                       canvasColor: Colors.white,
                       brightness: Brightness.dark,
                     ),
-                    child: _buildRoomDropDownWidget(height),
+                    child: _buildRoomDropDownWidget(),
                   ),
                 ),
               ],
@@ -748,17 +800,17 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildSliverGridWidget(double height) {
+  Widget _buildSliverGridWidget() {
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
       ),
       delegate: SliverChildListDelegate(
         <Widget>[
-          _buildHumidityCardWidget(height),
-          _buildTemperatureCardWidget(height),
-          _buildMotionDetectionCardWidget(height),
-          _buildLightIntensityCardWidget(height),
+          _buildHumidityCardWidget(),
+          _buildTemperatureCardWidget(),
+          _buildMotionDetectionCardWidget(),
+          _buildLightIntensityCardWidget(),
         ],
       ),
     );
@@ -766,15 +818,15 @@ class _MonitorPageState extends State<MonitorPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: CustomColors.darkGrey,
       body: CustomScrollView(
         slivers: <Widget>[
-          _buildSliverAppBarWidget(width, height),
-          _buildRoomDropDownSliverWidget(width, height),
+          _buildSliverAppBarWidget(),
+          _buildRoomDropDownSliverWidget(),
           SliverPadding(
             padding: EdgeInsets.only(
               top: ((2.032 * height) / 100),
@@ -782,7 +834,7 @@ class _MonitorPageState extends State<MonitorPage> {
               right: ((1.354 * height) / 100),
               bottom: ((1.354 * height) / 100),
             ),
-            sliver: _buildSliverGridWidget(height),
+            sliver: _buildSliverGridWidget(),
           ),
         ],
       ),
@@ -791,6 +843,11 @@ class _MonitorPageState extends State<MonitorPage> {
 
   @override
   void dispose() {
+    if (_socketIO != null) {
+      _socketIO.off("reloadPhoto", (dynamic data) {
+        print("SocketIO Disconnected :- MonitorPage");
+      });
+    }
     super.dispose();
   }
 }

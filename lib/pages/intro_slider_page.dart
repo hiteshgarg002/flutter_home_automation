@@ -18,6 +18,7 @@ class _IntroSliderPageState extends State<IntroSliderPage>
     with SingleTickerProviderStateMixin {
   PageController _introSliderController;
   SharedPreferences _sharedPreferences;
+  double height, width;
 
   @override
   void initState() {
@@ -37,8 +38,8 @@ class _IntroSliderPageState extends State<IntroSliderPage>
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
 
     StatusNavBarColorChanger.changeNavBarColor(CustomColors.grey);
 
@@ -102,12 +103,12 @@ class _IntroSliderPageState extends State<IntroSliderPage>
               Align(
                 alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 30.0),
+                  padding: EdgeInsets.only(top: ((4.064 * height) / 100)),
                   child: PageIndicator(
                     layout: PageIndicatorLayout.DROP,
-                    size: 10.0,
+                    size: ((1.354 * height) / 100),
                     controller: _introSliderController,
-                    space: 5.0,
+                    space: ((0.677 * height) / 100),
                     count: 3,
                     activeColor: Colors.white,
                     // color: Colors.white.withAlpha(90),

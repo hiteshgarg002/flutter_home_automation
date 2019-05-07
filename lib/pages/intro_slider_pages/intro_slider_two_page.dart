@@ -8,10 +8,12 @@ class IntroSliderTwoPage extends StatefulWidget {
 }
 
 class _IntroSliderOnePageState extends State<IntroSliderTwoPage> {
+  double height, width;
+
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: CustomColors.darkGrey,
@@ -28,7 +30,7 @@ class _IntroSliderOnePageState extends State<IntroSliderTwoPage> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: EdgeInsets.all(((2.032 * height) / 100)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 // crossAxisAlignment: CrossAxisAlignment.center,
@@ -37,20 +39,20 @@ class _IntroSliderOnePageState extends State<IntroSliderTwoPage> {
                     "Intro Test",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 15.5,
+                      fontSize: ((2.099 * height) / 100),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   SizedBox(
-                    height: 10.0,
+                    height: ((1.354 * height) / 100),
                   ),
                   Text(
                     "This is the into test for the slider screen one built for the home automation app that controls the appliances.",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 14.0,
+                      fontSize: ((1.896 * height) / 100),
                       fontWeight: FontWeight.normal,
-                      letterSpacing: 0.5,
+                      letterSpacing: ((0.067 * height) / 100),
                     ),
                   ),
                 ],

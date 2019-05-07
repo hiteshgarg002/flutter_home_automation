@@ -13,6 +13,7 @@ class _HumidityPageState extends State<HumidityPage> {
   static final GlobalKey<AnimatedCircularChartState> _chartKey1 =
       GlobalKey<AnimatedCircularChartState>();
   final String _humidityHeroTag = "HUMIDITY";
+  double height,width;
 
   static const myData = [
     ["Sun", "10"],
@@ -47,8 +48,8 @@ class _HumidityPageState extends State<HumidityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+  width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(
       CustomColors.darkGrey,
@@ -83,7 +84,7 @@ class _HumidityPageState extends State<HumidityPage> {
                       "Humidity",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15.0,
+                        fontSize: ((2.032 * height) / 100),
                       ),
                     ),
                   ],
@@ -98,15 +99,15 @@ class _HumidityPageState extends State<HumidityPage> {
         physics: AlwaysScrollableScrollPhysics(),
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(((2.709 * height) / 100)),
             child: Chip(
               backgroundColor: Colors.white,
-              elevation: 5.0,
+              elevation: ((0.677 * height) / 100),
               labelStyle: TextStyle(color: Colors.black),
               label: Text(
                 "Home",
                 style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: ((2.032 * height) / 100),
                 ),
               ),
             ),
@@ -131,7 +132,7 @@ class _HumidityPageState extends State<HumidityPage> {
                     holeLabel: "$_percentage%",
                     labelStyle: TextStyle(
                       color: Colors.white,
-                      fontSize: 18.0,
+                      fontSize: ((2.438 * height) / 100),
                     ),
                     initialChartData: data,
                     holeRadius: 70.0,
@@ -146,7 +147,7 @@ class _HumidityPageState extends State<HumidityPage> {
                         stroke: PaintOptions.stroke(
                           color: Colors.green,
                           strokeCap: StrokeCap.round,
-                          strokeWidth: 1.5,
+                          strokeWidth: ((0.203 * height) / 100),
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment(
@@ -167,7 +168,7 @@ class _HumidityPageState extends State<HumidityPage> {
                             strokeCap: StrokeCap.round,
                           ),
                           shape: MarkerShapes.circle,
-                          size: 5.0,
+                          size: ((0.677 * height) / 100),
                         ),
                         curve: CardinalSpline(),
                         yAxis: ChartAxis(
@@ -193,10 +194,10 @@ class _HumidityPageState extends State<HumidityPage> {
                       ),
                     ],
                     chartPadding: EdgeInsets.fromLTRB(
-                      40.0,
-                      20.0,
-                      20.0,
-                      20.0,
+                      ((5.418 * height) / 100),
+                      ((2.709 * height) / 100),
+                      ((2.709 * height) / 100),
+                      ((2.709 * height) / 100),
                     ),
                   ),
                 ],
@@ -204,7 +205,7 @@ class _HumidityPageState extends State<HumidityPage> {
             ),
           ),
           SizedBox(
-            height: 10.0,
+            height: ((1.354 * height) / 100),
           ),
           Center(
             child: Hero(
@@ -219,32 +220,32 @@ class _HumidityPageState extends State<HumidityPage> {
           ),
           Padding(
             padding: EdgeInsets.all(
-              20.0,
+              ((2.709 * height) / 100),
             ),
             child: Text(
               "Humidity",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20.0,
+                fontSize: ((2.709 * height) / 100),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 20.0,
+              horizontal: ((2.709 * height) / 100),
             ),
             child: Text(
               "Humidity is the amount of water vapour present in air. Water vapour, the gaseous state of water, is generally invisible to the human eye. Humidity indicates the likelihood for precipitation, dew, or fog to be present. The amount of water vapour needed to achieve saturation increases as the temperature increases. As the temperature of a parcel of air decreases it will eventually reach the saturation point without adding or losing water mass. The amount of water vapour contained within a parcel of air can vary significantly.",
               style: TextStyle(
                 color: Colors.grey,
                 letterSpacing: 1.2,
-                fontSize: 16.0,
+                fontSize: ((2.167 * height) / 100),
               ),
             ),
           ),
           SizedBox(
-            height: 15.0,
+            height: ((2.032 * height) / 100),
           ),
         ],
       ),

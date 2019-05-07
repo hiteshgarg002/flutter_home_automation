@@ -12,7 +12,6 @@ import 'package:flutter_home_automation/pages/humidity_page.dart';
 import 'package:flutter_home_automation/pages/intro_slider_page.dart';
 import 'package:flutter_home_automation/pages/light_intensity_page.dart';
 import 'package:flutter_home_automation/pages/motion_detection_page.dart';
-import 'package:flutter_home_automation/pages/profile_page.dart';
 import 'package:flutter_home_automation/pages/room_page.dart';
 import 'package:flutter_home_automation/pages/room_timeline_page.dart';
 import 'package:flutter_home_automation/pages/temperature_page.dart';
@@ -49,6 +48,7 @@ class RouteHandler {
         bloc: RoomPageBloc(),
         child: RoomPage(
           roomId: args["roomId"],
+          reloadRooms: args["reloadRooms"],
         ),
       );
     },
@@ -59,12 +59,6 @@ class RouteHandler {
       return ApplianceSettingsPage(
         applianceData: args as Map,
       );
-    },
-  );
-
-  static var _profilePageHandler = Handler(
-    pageBuilder: (BuildContext context, dynamic args) {
-      return ProfilePage();
     },
   );
 
@@ -126,7 +120,6 @@ class RouteHandler {
     "/lightIntensityPage": _lightIntensityPageHandler,
     "/roomPage": _roomPageHandler,
     "/applianceSettingsPage": _applianceSettingsPageHandler,
-    "/profilePage": _profilePageHandler,
     "/roomTimelinePage": _roomTimelinePageHandler,
     "/loginPage": _loginPageHandler,
     "/introSliderPage": _introSliderPageHandler,

@@ -44,10 +44,10 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
           color: CustomColors.darkGrey,
           // borderRadius: BorderRadius.only(
           //   bottomLeft: Radius.circular(
-          //     45.0,
+          //     ((6.096 * height) / 100),
           //   ),
           //   bottomRight: Radius.circular(
-          //     45.0,
+          //     ((6.096 * height) / 100),
           //   ),
           // ),
         ),
@@ -57,7 +57,7 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(
-                left: 7.0,
+                left: ((0.948 * height) / 100),
               ),
               child: Stack(
                 children: <Widget>[
@@ -67,7 +67,7 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                       icon: Icon(
                         Icons.arrow_back_ios,
                         color: Colors.white,
-                        size: 25.0,
+                        size: ((3.386 * height) / 100),
                       ),
                       onPressed: () async {
                         Navigator.pop(context);
@@ -80,8 +80,8 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
             Padding(
               padding: EdgeInsets.only(
                 top: 12.5,
-                left: 25.0,
-                right: 20.0,
+                left: ((3.386 * height) / 100),
+                right: ((2.709 * height) / 100),
               ),
               child: Stack(
                 children: <Widget>[
@@ -91,7 +91,7 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                       "Timeline",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 30.0,
+                        fontSize: ((4.064 * height) / 100),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -99,10 +99,10 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                   Align(
                     alignment: Alignment.centerRight,
                     child: Container(
-                      height: 40.0,
+                      height: ((5.418 * height) / 100),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(
-                          20.0,
+                          ((2.709 * height) / 100),
                         ),
                       ),
                       child: AvatarGlow(
@@ -128,7 +128,7 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                 ],
               ),
             ),
-            SizedBox(height: 20.0),
+            SizedBox(height: ((2.709 * height) / 100)),
             Expanded(
               child: Center(
                 child: TabBar(
@@ -136,9 +136,9 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                   indicatorSize: TabBarIndicatorSize.tab,
                   labelColor: Colors.white,
                   labelPadding: EdgeInsets.only(
-                    bottom: 10.0,
-                    left: 12.0,
-                    right: 12.0,
+                    bottom: ((1.354 * height) / 100),
+                    left: ((1.625 * height) / 100),
+                    right: ((1.625 * height) / 100),
                   ),
                   controller: _tabController,
                   isScrollable: true,
@@ -150,8 +150,8 @@ class _RoomTimelinePageState extends State<RoomTimelinePage>
                         child: Text(
                           "${tabs[index]}",
                           style: TextStyle(
-                            fontSize: 14.0,
-                            letterSpacing: 1.5,
+                            fontSize: ((1.896 * height) / 100),
+                            letterSpacing: ((0.203 * height) / 100),
                           ),
                         ),
                       );

@@ -8,7 +8,7 @@ class RoomAppBarClipper extends CustomClipper<Path> {
     // final Path path = Path();
     // path.lineTo(0.0, size.height);
 
-    // var firstEndPoint = Offset(size.width * .5, size.height - 30.0);
+    // var firstEndPoint = Offset(size.width * .5, size.height - ((4.064 * height) / 100));
     // var firstControlpoint = Offset(size.width * 0.25, size.height - 50.0);
     // path.quadraticBezierTo(firstControlpoint.dx, firstControlpoint.dy,
     //     firstEndPoint.dx, firstEndPoint.dy);

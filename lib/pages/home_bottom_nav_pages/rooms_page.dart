@@ -1,5 +1,7 @@
 import 'package:adhara_socket_io/adhara_socket_io.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/blocs/rooms_page_bloc.dart';
 import 'package:flutter_home_automation/networks/dio_api.dart';
@@ -19,6 +21,8 @@ class _RoomsPageState extends State<RoomsPage> {
   List _response;
   final GlobalKey<ScaffoldState> _sfKey = GlobalKey<ScaffoldState>();
   TextEditingController _roomNameController;
+  double height, width;
+  String _name = "";
 
   @override
   void initState() {
@@ -30,11 +34,13 @@ class _RoomsPageState extends State<RoomsPage> {
     _roomsPageBloc = BlocProvider.of<RoomsPageBloc>(context);
 
     _getAllRooms(initialLoading: true);
-    _getReloadRoomsIO();
+    // _getReloadRoomsIO();
+    // _getSharedPreferences();
   }
 
-  Future _getSharedPreferences() async {
+  Future<SharedPreferences> _getSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
+    return _prefs;
   }
 
   Future _getAllRooms({@required bool initialLoading}) async {
@@ -45,23 +51,68 @@ class _RoomsPageState extends State<RoomsPage> {
     }
   }
 
-  Future<Null> _getReloadRoomsIO() async {
-    await _getSharedPreferences();
-
-    SocketIOManager manager = SocketIOManager();
-    SocketIO socket = await manager.createInstance('${DioAPI.baseURL}');
-    socket.onConnect((data) {
-      socket.emit("join", [_prefs.getString("userId")]);
-    });
-    socket.on("reloadrooms", (data) {
-      _roomsPageBloc.setLoadingStatus(true);
-      _getAllRooms(initialLoading: true);
-    });
-
-    socket.connect();
+  void _reloadRooms() {
+    _roomsPageBloc.setLoadingStatus(true);
+    _getAllRooms(initialLoading: true);
   }
 
-  Widget _buildCustomAppBarWidget(double width, double height) {
+  Widget _buildUserPhotoWidget() {
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      radius: ((2.641 * height) / 100),
+      child: Center(
+        child: FutureBuilder<SharedPreferences>(
+          future: _getSharedPreferences(),
+          builder: (BuildContext context,
+              AsyncSnapshot<SharedPreferences> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return CircleAvatar(
+                  radius: ((2.641 * height) / 100),
+                  backgroundColor: Colors.white,
+                );
+              case ConnectionState.active:
+                return CircleAvatar(
+                  radius: ((2.641 * height) / 100),
+                  backgroundColor: Colors.white,
+                );
+              case ConnectionState.waiting:
+                return CircleAvatar(
+                  radius: ((2.641 * height) / 100),
+                  backgroundColor: Colors.white,
+                );
+              case ConnectionState.done:
+                _name = snapshot.data.getString("name");
+                String photoUrl = snapshot.data.getString("photoUrl");
+
+                if (photoUrl.isEmpty) {
+                  return Text(
+                    "${_name.substring(0, 1)}${_name.split(" ")[1].substring(0, 1)}",
+                    style: TextStyle(
+                      color: CustomColors.darkestGrey,
+                      fontSize: ((2.0 * height) / 100),
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                } else {
+                  return CircleAvatar(
+                    radius: ((2.5 * height) / 100),
+                    backgroundColor: Colors.white,
+                    backgroundImage: CachedNetworkImageProvider(
+                      "${DioAPI.baseURL}/$photoUrl",
+                      cacheManager: DefaultCacheManager(),
+                    ),
+                  );
+                }
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomAppBarWidget() {
     return FlexibleSpaceBar(
       collapseMode: CollapseMode.parallax,
       background: Container(
@@ -72,40 +123,31 @@ class _RoomsPageState extends State<RoomsPage> {
               alignment: Alignment.topLeft,
               child: Padding(
                 padding: EdgeInsets.all(
-                  10.0,
+                  ((1.354 * height) / 100),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 19.5,
-                      child: CircleAvatar(
-                        radius: 18.5,
-                        backgroundImage: AssetImage(
-                          "assets/hitesh_cropped.jpg",
-                        ),
-                      ),
-                    ),
+                    _buildUserPhotoWidget(),
                     SizedBox(
-                      height: 7.0,
+                      height: ((0.948 * height) / 100),
                     ),
                     Text(
-                      "Hi Hitesh!",
+                      "Hi !",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 18.0,
+                        fontSize: ((2.438 * height) / 100),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     SizedBox(
-                      height: 3.0,
+                      height: ((0.406 * height) / 100),
                     ),
                     Text(
                       "Your automated Rooms",
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 12.0,
+                        fontSize: ((1.625 * height) / 100),
                       ),
                     ),
                   ],
@@ -115,52 +157,8 @@ class _RoomsPageState extends State<RoomsPage> {
             Align(
               alignment: Alignment.topRight,
               child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Material(
-                  elevation: 15.0, type: MaterialType.button,
-                  // shadowColor: Colors.transparent,
-                  color: Colors.lightBlue,
-                  shape: CircleBorder(
-                    side: BorderSide(
-                      color: Colors.white,
-                      style: BorderStyle.solid,
-                      width: 1.5,
-                    ),
-                  ),
-                  child: IconButton(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    iconSize: 30.0,
-                    onPressed: () {
-                      Map roomData = {
-                        "newRoom": true,
-                        "tempRoomId": _response.length,
-                      };
-
-                      if (_response.isEmpty) {
-                        _roomsPageBloc.addTempRoom(
-                          roomData: roomData,
-                          emptyList: true,
-                        );
-                      } else if (!(_response[0] as Map)
-                          .containsKey("newRoom")) {
-                        _roomsPageBloc.addTempRoom(
-                          roomData: roomData,
-                          emptyList: false,
-                        );
-                      } else {
-                        _showSnackBar(
-                          "Can't add more than 1 room at a time.",
-                          Icons.warning,
-                        );
-                      }
-                    },
-                  ),
-                ),
+                padding: EdgeInsets.all(((1.354 * height) / 100)),
+                child: _buildCreateRoomButtonWidget(),
               ),
             ),
           ],
@@ -169,11 +167,59 @@ class _RoomsPageState extends State<RoomsPage> {
     );
   }
 
+  Widget _buildCreateRoomButtonWidget() {
+    return Material(
+      elevation: ((2.032 * height) / 100),
+      type: MaterialType.button,
+      color: Colors.lightBlue,
+      shape: CircleBorder(
+        side: BorderSide(
+          color: Colors.white,
+          style: BorderStyle.solid,
+          width: ((0.203 * height) / 100),
+        ),
+      ),
+      child: IconButton(
+        tooltip: "Create Room",
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        iconSize: ((4.064 * height) / 100),
+        onPressed: () {
+          Map roomData = {
+            "newRoom": true,
+            "tempRoomId": _response.length,
+          };
+
+          if (_response.isEmpty) {
+            _roomsPageBloc.addTempRoom(
+              roomData: roomData,
+              emptyList: true,
+            );
+          } else if (!(_response[0] as Map).containsKey("newRoom")) {
+            _roomsPageBloc.addTempRoom(
+              roomData: roomData,
+              emptyList: false,
+            );
+          } else {
+            _showSnackBar(
+              "Can't add more than 1 room at a time.",
+              Icons.warning,
+            );
+          }
+        },
+      ),
+    );
+  }
+
   OutlineInputBorder _buildTextFieldOutlineInputBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(25.0),
+      borderRadius: BorderRadius.circular(((3.386 * height) / 100)),
       borderSide: BorderSide(
-        width: 0.7,
+        width: ((0.094 * height) / 100),
         color: Colors.black,
         style: BorderStyle.solid,
       ),
@@ -187,10 +233,10 @@ class _RoomsPageState extends State<RoomsPage> {
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       keyboardType: TextInputType.text,
-      cursorWidth: 1.5,
+      cursorWidth: ((0.203 * height) / 100),
       cursorColor: Colors.black,
       style: TextStyle(
-        fontSize: 15.0,
+        fontSize: ((2.032 * height) / 100),
         color: Colors.black,
       ),
       decoration: InputDecoration(
@@ -201,16 +247,16 @@ class _RoomsPageState extends State<RoomsPage> {
         border: _buildTextFieldOutlineInputBorder(),
         enabledBorder: _buildTextFieldOutlineInputBorder(),
         contentPadding: EdgeInsets.only(
-          left: 10.0,
-          right: 10.0,
-          top: 8.0,
-          bottom: 8.0,
+          left: ((1.354 * height) / 100),
+          right: ((1.354 * height) / 100),
+          top: ((1.083 * height) / 100),
+          bottom: ((1.083 * height) / 100),
         ),
         filled: true,
         fillColor: Colors.white,
         hintText: "Room name",
         hintStyle: TextStyle(
-          fontSize: 13.5,
+          fontSize: ((1.828 * height) / 100),
           color: Colors.grey,
         ),
       ),
@@ -230,16 +276,16 @@ class _RoomsPageState extends State<RoomsPage> {
             Icon(
               icon,
               color: Colors.amber,
-              size: 22.0,
+              size: ((2.980 * height) / 100),
             ),
             SizedBox(
-              width: 7.0,
+              width: ((0.948 * height) / 100),
             ),
             Text(
               "$content",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 14.0,
+                fontSize: ((1.896 * height) / 100),
               ),
             ),
           ],
@@ -287,98 +333,101 @@ class _RoomsPageState extends State<RoomsPage> {
     }
   }
 
-  Widget _buildRoomCardWidget(double height, double width, int index) {
+  Widget _buildNewTempRoomCardWidget() {
+    return Card(
+      margin: EdgeInsets.all(
+        ((1.083 * height) / 100),
+      ),
+      color: Colors.white,
+      elevation: ((1.354 * height) / 100),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          ((2.032 * height) / 100),
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: ((2.709 * height) / 100),
+        ),
+        child: StreamBuilder<bool>(
+          initialData: false,
+          stream: _roomsPageBloc.getRoomCreationLoadingStatus,
+          builder: (BuildContext context, AsyncSnapshot<bool> loadingSnapshot) {
+            return !loadingSnapshot.data
+                ? Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _buildNewRoomTextFieldWidget(),
+                      SizedBox(
+                        height: ((2.032 * height) / 100),
+                      ),
+                      Stack(
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.cancel,
+                                color: Colors.black,
+                              ),
+                              iconSize: ((4.605 * height) / 100),
+                              onPressed: () {
+                                _roomsPageBloc.removeTempRoom();
+                              },
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.done,
+                                color: Colors.black,
+                              ),
+                              iconSize: ((4.605 * height) / 100),
+                              onPressed: () async {
+                                FocusScope.of(context).detach();
+                                await _createRoom();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Container(
+                      height: ((3.386 * height) / 100),
+                      width: ((3.386 * height) / 100),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.black),
+                          strokeWidth: 2.0,
+                          backgroundColor: Colors.transparent,
+                        ),
+                      ),
+                    ),
+                  );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRoomCardWidget(int index) {
     Map res = _response[index] as Map;
 
     return res.containsKey("newRoom")
-        ? Card(
-            margin: EdgeInsets.all(
-              8.0,
-            ),
-            color: Colors.white,
-            elevation: 10.0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                ((2.032 * height) / 100),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 20.0,
-              ),
-              child: StreamBuilder<bool>(
-                initialData: false,
-                stream: _roomsPageBloc.getRoomCreationLoadingStatus,
-                builder: (BuildContext context,
-                    AsyncSnapshot<bool> loadingSnapshot) {
-                  return !loadingSnapshot.data
-                      ? Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            _buildNewRoomTextFieldWidget(),
-                            SizedBox(
-                              height: 15.0,
-                            ),
-                            Stack(
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.cancel,
-                                      color: Colors.black,
-                                    ),
-                                    iconSize: 34.0,
-                                    onPressed: () {
-                                      _roomsPageBloc.removeTempRoom();
-                                    },
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.done,
-                                      color: Colors.black,
-                                    ),
-                                    iconSize: 34.0,
-                                    onPressed: () async {
-                                      FocusScope.of(context).detach();
-                                      await _createRoom();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                      : Center(
-                          child: Container(
-                            height: 25.0,
-                            width: 25.0,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.black),
-                                strokeWidth: 2.0,
-                                backgroundColor: Colors.transparent,
-                              ),
-                            ),
-                          ),
-                        );
-                },
-              ),
-            ),
-          )
+        ? _buildNewTempRoomCardWidget()
         : GestureDetector(
             child: Card(
               margin: EdgeInsets.all(
-                8.0,
+                ((1.083 * height) / 100),
               ),
               color: Colors.white,
-              elevation: 10.0,
+              elevation: ((1.354 * height) / 100),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   ((2.032 * height) / 100),
@@ -386,7 +435,7 @@ class _RoomsPageState extends State<RoomsPage> {
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 20.0,
+                  horizontal: ((2.709 * height) / 100),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -397,27 +446,27 @@ class _RoomsPageState extends State<RoomsPage> {
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15.5,
+                        fontSize: ((2.099 * height) / 100),
                       ),
                     ),
                     SizedBox(
-                      height: 5.0,
+                      height: ((0.677 * height) / 100),
                     ),
                     Text(
                       "1 person has access!",
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 12.0,
+                        fontSize: ((1.625 * height) / 100),
                       ),
                     ),
                     SizedBox(
-                      height: 15.0,
+                      height: ((2.032 * height) / 100),
                     ),
                     Text(
                       "${res["numDevices"].toString()} Devices",
                       style: TextStyle(
                         color: Colors.amber,
-                        fontSize: 11.5,
+                        fontSize: ((1.557 * height) / 100),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -431,6 +480,7 @@ class _RoomsPageState extends State<RoomsPage> {
                 "/roomPage",
                 arg: <String, dynamic>{
                   "roomId": res["_id"],
+                  "reloadRooms": _reloadRooms,
                 },
                 transactionType: TransactionType.fadeIn,
               );
@@ -454,7 +504,7 @@ class _RoomsPageState extends State<RoomsPage> {
                     OutlineButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                          20.0,
+                          ((2.709 * height) / 100),
                         ),
                       ),
                       borderSide: BorderSide(color: Colors.black),
@@ -462,7 +512,7 @@ class _RoomsPageState extends State<RoomsPage> {
                         "Delete",
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14.0,
+                          fontSize: ((1.896 * height) / 100),
                         ),
                       ),
                       onPressed: () async {
@@ -476,12 +526,12 @@ class _RoomsPageState extends State<RoomsPage> {
                       },
                     ),
                     SizedBox(
-                      width: 8.0,
+                      width: ((1.083 * height) / 100),
                     ),
                     OutlineButton(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                          20.0,
+                          ((2.709 * height) / 100),
                         ),
                       ),
                       borderSide: BorderSide(color: Colors.black),
@@ -489,7 +539,7 @@ class _RoomsPageState extends State<RoomsPage> {
                         "Close",
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 14.0,
+                          fontSize: ((1.896 * height) / 100),
                         ),
                       ),
                       onPressed: () {
@@ -499,18 +549,18 @@ class _RoomsPageState extends State<RoomsPage> {
                   ],
                 )
               : Container(
-                  height: 20.0,
-                  width: 20.0,
+                  height: ((2.709 * height) / 100),
+                  width: ((2.709 * height) / 100),
                   child: CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                    strokeWidth: 1.5,
+                    strokeWidth: ((0.203 * height) / 100),
                     backgroundColor: Colors.transparent,
                   ),
                 );
         },
       ),
       SizedBox(
-        width: 1.0,
+        width: ((0.135 * height) / 100),
       ),
     ];
   }
@@ -522,9 +572,9 @@ class _RoomsPageState extends State<RoomsPage> {
         // return object of type Dialog
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(((4.064 * height) / 100)),
           ),
-          elevation: 15.0,
+          elevation: ((2.032 * height) / 100),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -533,17 +583,17 @@ class _RoomsPageState extends State<RoomsPage> {
               Icon(
                 Icons.warning,
                 color: Colors.orange,
-                size: 24.0,
+                size: ((3.251 * height) / 100),
               ),
               SizedBox(
-                width: 7.0,
+                width: ((0.948 * height) / 100),
               ),
               Text(
                 "Delete",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 17.0,
+                  fontSize: ((2.302 * height) / 100),
                 ),
               ),
             ],
@@ -553,7 +603,7 @@ class _RoomsPageState extends State<RoomsPage> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.normal,
-              fontSize: 15.0,
+              fontSize: ((2.032 * height) / 100),
             ),
           ),
           actions: _deleteDialogActions(res),
@@ -562,7 +612,7 @@ class _RoomsPageState extends State<RoomsPage> {
     );
   }
 
-  Widget _buildRoomsSliverGridWidget(double height, double width) {
+  Widget _buildRoomsSliverGridWidget() {
     return StreamBuilder<List>(
       stream: _roomsPageBloc.getRoomsList,
       builder: (BuildContext context, AsyncSnapshot<List> roomListSnapshot) {
@@ -581,7 +631,7 @@ class _RoomsPageState extends State<RoomsPage> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return _buildRoomCardWidget(height, width, index);
+                    return _buildRoomCardWidget(index);
                   },
                   childCount: roomListSnapshot.data.length,
                 ),
@@ -595,7 +645,7 @@ class _RoomsPageState extends State<RoomsPage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 15.0,
+                        fontSize: ((2.032 * height) / 100),
                       ),
                     ),
                   ),
@@ -621,8 +671,8 @@ class _RoomsPageState extends State<RoomsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       key: _sfKey,
@@ -631,16 +681,16 @@ class _RoomsPageState extends State<RoomsPage> {
         slivers: <Widget>[
           SliverAppBar(
             backgroundColor: CustomColors.grey,
-            expandedHeight: height * 0.145,
+            expandedHeight: height * 0.15,
             floating: true,
-            flexibleSpace: _buildCustomAppBarWidget(width, height),
+            flexibleSpace: _buildCustomAppBarWidget(),
           ),
           SliverPadding(
             padding: EdgeInsets.only(
-              bottom: 7.0,
-              top: 7.0,
-              left: 12.0,
-              right: 12.0,
+              bottom: ((0.948 * height) / 100),
+              top: ((0.948 * height) / 100),
+              left: ((1.625 * height) / 100),
+              right: ((1.625 * height) / 100),
             ),
             sliver: StreamBuilder<bool>(
               initialData: true,
@@ -649,7 +699,7 @@ class _RoomsPageState extends State<RoomsPage> {
                   (BuildContext context, AsyncSnapshot<bool> loadingSnapshot) {
                 return loadingSnapshot.data
                     ? _buildInitialLoadingWidget()
-                    : _buildRoomsSliverGridWidget(height, width);
+                    : _buildRoomsSliverGridWidget();
               },
             ),
           ),

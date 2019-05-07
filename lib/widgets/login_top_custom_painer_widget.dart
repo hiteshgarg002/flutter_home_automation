@@ -49,8 +49,8 @@ class LoginSignupTopCustomPainter extends CustomPainter {
     //   ],
     //   stops: [
     //     0.0,
-    //     0.5,
-    //     // 0.7,
+    //     ((0.067 * height) / 100),
+    //     // ((0.094 * height) / 100),
     //     // 0.9,
     //     1.0,
     //   ],

@@ -6,7 +6,6 @@ import 'package:flutter_home_automation/networks/network_calls.dart';
 import 'package:flutter_home_automation/utils/StatusNavBarColorChanger.dart';
 import 'package:flutter_home_automation/utils/appliance_type_enum.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
-import 'package:navigate/navigate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddAppliancePage extends StatefulWidget {
@@ -34,6 +33,8 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
   TextEditingController _applianceNameTextController;
   SharedPreferences _prefs;
   final GlobalKey<ScaffoldState> _sfKey = GlobalKey<ScaffoldState>();
+  double height;
+  double width;
 
   @override
   void initState() {
@@ -62,7 +63,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
       child: Text(
         "-- Select Device --",
         style: TextStyle(
-          fontSize: 15.0,
+          fontSize: ((2.032 * height) / 100),
           color: Colors.black,
           fontWeight: FontWeight.normal,
         ),
@@ -77,7 +78,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
         child: Text(
           "Device - ${arduinoModel.arduinoId}",
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: ((2.032 * height) / 100),
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -106,7 +107,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
       child: Text(
         "-- PIN --",
         style: TextStyle(
-          fontSize: 15.0,
+          fontSize: ((2.032 * height) / 100),
           color: Colors.black,
           fontWeight: FontWeight.normal,
         ),
@@ -121,7 +122,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
         child: Text(
           "PIN - $pin",
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: ((2.032 * height) / 100),
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -143,7 +144,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
             hint: Text(
               "-- Select Device --",
               style: TextStyle(
-                fontSize: 15.0,
+                fontSize: ((2.032 * height) / 100),
                 color: Colors.black,
                 fontWeight: FontWeight.normal,
               ),
@@ -187,7 +188,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                 hint: Text(
                   "-- PIN --",
                   style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: ((2.032 * height) / 100),
                     color: Colors.black,
                     fontWeight: FontWeight.normal,
                   ),
@@ -211,7 +212,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
 
   OutlineInputBorder _buildTextFieldOutlineInputBorder() {
     return OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
+      borderRadius: BorderRadius.circular(((1.354 * height) / 100)),
       borderSide: BorderSide(
         width: 1.0,
         color: Colors.black,
@@ -230,7 +231,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
       cursorWidth: 0.8,
       cursorColor: Colors.black,
       style: TextStyle(
-        fontSize: 17.0,
+        fontSize: ((2.302 * height) / 100),
         color: Colors.black,
       ),
       decoration: InputDecoration(
@@ -241,16 +242,16 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
         border: _buildTextFieldOutlineInputBorder(),
         enabledBorder: _buildTextFieldOutlineInputBorder(),
         contentPadding: EdgeInsets.only(
-          left: 14.0,
-          right: 14.0,
-          top: 16.0,
-          bottom: 16.0,
+          left: ((1.896 * height) / 100),
+          right: ((1.896 * height) / 100),
+          top: ((2.167 * height) / 100),
+          bottom: ((2.167 * height) / 100),
         ),
         filled: true,
         fillColor: Colors.white,
         hintText: "Appliance name",
         hintStyle: TextStyle(
-          fontSize: 15.0,
+          fontSize: ((2.032 * height) / 100),
           color: Colors.grey,
         ),
       ),
@@ -261,20 +262,20 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
     );
   }
 
-  Widget _buildCustomAppBarWidget(double height, double width) {
+  Widget _buildCustomAppBarWidget() {
     return PreferredSize(
-      preferredSize: Size(width, height * 0.22),
+      preferredSize: Size(width, height * 0.20),
       child: Stack(
         children: <Widget>[
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(left: ((1.083 * height) / 100)),
               child: IconButton(
                 icon: Icon(
                   Icons.arrow_back_ios,
                   color: Colors.black,
-                  size: 25.0,
+                  size: ((3.386 * height) / 100),
                 ),
                 onPressed: () {
                   Navigator.pop(context);
@@ -282,28 +283,10 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
               ),
             ),
           ),
-          // Align(
-          //   alignment: Alignment.topRight,
-          //   child: Hero(
-          //     transitionOnUserGestures: true,
-          //     tag: "$_addButtonTag",
-          //     child: Padding(
-          //       padding: EdgeInsets.only(right: 7.0),
-          //       child: IconButton(
-          //         icon: Icon(
-          //           Icons.add_circle,
-          //           color: Colors.black,
-          //           size: 25.0,
-          //         ),
-          //         onPressed: () {},
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(top: 60.0, left: 25.0),
+              padding: EdgeInsets.only(top: ((8.128 * height) / 100), left: ((3.386 * height) / 100)),
               child: Text(
                 "Add Appliance",
                 style: TextStyle(
@@ -355,7 +338,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                           applianceTypeSnapshot.data == ApplianceType.READING
                       ? Colors.white
                       : Colors.black,
-                  borderRadius: BorderRadius.circular(45.0),
+                  borderRadius: BorderRadius.circular(((6.096 * height) / 100)),
                 ),
                 child: Center(
                   child: Text(
@@ -366,7 +349,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                                   ApplianceType.READING
                           ? Colors.black
                           : Colors.white,
-                      fontSize: 15.0,
+                      fontSize: ((2.032 * height) / 100),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -389,7 +372,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                           applianceTypeSnapshot.data == ApplianceType.STATUS
                       ? Colors.white
                       : Colors.black,
-                  borderRadius: BorderRadius.circular(45.0),
+                  borderRadius: BorderRadius.circular(((10.0 * height) / 100)),
                 ),
                 child: Center(
                   child: Text(
@@ -399,7 +382,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                               applianceTypeSnapshot.data == ApplianceType.STATUS
                           ? Colors.black
                           : Colors.white,
-                      fontSize: 15.0,
+                      fontSize: ((2.032 * height) / 100),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -418,7 +401,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
   Widget _buildAddApplianceButtonWidget() {
     return OutlineButton.icon(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
+        borderRadius: BorderRadius.circular(((2.032 * height) / 100)),
       ),
       icon: Hero(
         transitionOnUserGestures: true,
@@ -432,13 +415,13 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
         "Add appliance",
         style: TextStyle(
           color: Colors.black,
-          fontSize: 14.0,
+          fontSize: ((1.896 * height) / 100),
         ),
       ),
       highlightColor: Colors.white54,
       highlightedBorderColor: Colors.lightBlue,
       splashColor: Colors.lightBlue,
-      padding: EdgeInsets.all(12.0),
+      padding: EdgeInsets.all(((1.625 * height) / 100)),
       onPressed: _addAppliance,
     );
   }
@@ -484,17 +467,17 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
           children: <Widget>[
             Icon(
               Icons.error,
-              size: 24.0,
+              size: ((3.251 * height) / 100),
               color: Colors.white,
             ),
             SizedBox(
-              width: 7.0,
+              width: ((0.948 * height) / 100),
             ),
             Text(
               "$content",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 15.0,
+                fontSize: ((2.032 * height) / 100),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -507,14 +490,14 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(Colors.white);
 
     return Scaffold(
       key: _sfKey,
-      appBar: _buildCustomAppBarWidget(width, height),
+      appBar: _buildCustomAppBarWidget(),
       backgroundColor: Colors.white,
       body: StreamBuilder<bool>(
         initialData: true,
@@ -526,25 +509,22 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    SizedBox(
-                      height: 35.0,
-                    ),
                     Center(
                       child: _buildDeviceDropDownWidget(),
                     ),
                     SizedBox(
-                      height: 20.0,
+                      height: ((2.709 * height) / 100),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 45.0),
+                      padding: EdgeInsets.symmetric(horizontal: ((6.096 * height) / 100)),
                       child: _buildApplianceNameTextFieldWidget(),
                     ),
-                    SizedBox(height: 30.0),
+                    SizedBox(height: ((4.064 * height) / 100)),
                     Center(
                       child: _buildPinDropDownWidget(),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                      padding: EdgeInsets.symmetric(vertical: ((2.032 * height) / 100)),
                       child: Divider(),
                     ),
                     Center(
@@ -554,13 +534,13 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                           "Appliance Type",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 17.0,
+                            fontSize: ((2.302 * height) / 100),
                           ),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 25.0,
+                      height: ((3.386 * height) / 100),
                     ),
                     _buildApplianceTypeWidget(),
                     Expanded(
@@ -569,7 +549,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Padding(
-                              padding: EdgeInsets.only(bottom: 20.0),
+                              padding: EdgeInsets.only(bottom: ((2.709 * height) / 100)),
                               child: _buildAddApplianceButtonWidget(),
                             ),
                           ),

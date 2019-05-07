@@ -3,7 +3,6 @@ import 'package:flutter_home_automation/blocs/monitor_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/blocs/home_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/rooms_page_bloc.dart';
-import 'package:flutter_home_automation/networks/socket_io_calls.dart';
 import 'package:flutter_home_automation/pages/home_bottom_nav_pages/about_us_page.dart';
 import 'package:flutter_home_automation/pages/home_bottom_nav_pages/rooms_page.dart';
 import 'package:flutter_home_automation/pages/home_bottom_nav_pages/monitor_page.dart';
@@ -20,6 +19,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   static final GlobalKey<ScaffoldState> _sfKey = GlobalKey<ScaffoldState>();
+  double height,width;
 
   List<Widget> _pages;
   HomePageBloc _homePageBloc;
@@ -58,8 +58,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
+     height = MediaQuery.of(context).size.height;
+     width = MediaQuery.of(context).size.width;
 
     // print("14 is the ${(14 * 100) / height}% of Height :- $height");
 

@@ -77,6 +77,33 @@ class NetworkCalls {
     return res;
   }
 
+  static Future<Map> updatePhoto(String userId, File imageFile) async {
+    Map uploadRes = Map();
+
+    uploadRes = await _uploadPhoto(imageFile);
+
+    final String updatePhotoPath = "/auth/postUpdatePhoto";
+
+    Dio dio = DioAPI.getDioInstance();
+    Response response;
+
+    response = await dio.put(
+      updatePhotoPath,
+      data: {
+        "userId": userId,
+        "photoUrl":
+            uploadRes.containsKey("photoUrl") ? uploadRes["photoUrl"] : "",
+      },
+      options: Options(
+        responseType: ResponseType.json,
+      ),
+    );
+
+    final Map res = response.data;
+
+    return res;
+  }
+
   // static Future<Map> signup(
   //     Map<String, String> userData, File imageFile) async {
   //   Map uploadRes = Map();
@@ -336,8 +363,7 @@ class NetworkCalls {
 
       deleteRes = response.data["deleteStatus"];
     } on Exception catch (err) {
-      print(
-          "Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
+      print("Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
     }
     return deleteRes;
   }
@@ -346,8 +372,7 @@ class NetworkCalls {
     String userId = applianceData["userId"];
     String roomId = applianceData["roomId"];
 
-    final String deleteRoomPath =
-        "/room/postDeleteRoom/$userId/$roomId";
+    final String deleteRoomPath = "/room/postDeleteRoom/$userId/$roomId";
 
     bool deleteRes;
 
@@ -364,9 +389,79 @@ class NetworkCalls {
 
       deleteRes = response.data["deleted"];
     } on Exception catch (err) {
-      print(
-          "Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
+      print("Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
     }
     return deleteRes;
+  }
+
+  static Future deletePhoto(String userId, String photoUrl) async {
+    final String deleteRoomPath = "/auth/postDeletePhoto/$userId/$photoUrl";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+
+      await dio.delete(
+        deleteRoomPath,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+    } on Exception catch (err) {
+      print("Error - NetworkCalls - deletePhoto :- ${err.toString()}");
+    }
+  }
+
+  static Future<Map> updateName(String userId, String name) async {
+    final String updateNamePath = "/auth/postUpdateName";
+    Map res;
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.put(
+        updateNamePath,
+        data: {
+          "userId": userId,
+          "name": name,
+        },
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      res = response.data;
+    } on Exception catch (err) {
+      print("Error - NetworkCalls - updateName :- ${err.toString()}");
+    }
+
+    return res;
+  }
+
+  static Future getRoomsAppliancesCount(String userId) async {
+    final String roomsPath = "/room/getRoomsAppliancesCount";
+    Map res;
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.get(
+        roomsPath,
+        queryParameters: <String, dynamic>{
+          "userId": userId,
+        },
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      res = response.data;
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - getRoomsAppliancesCount :- ${err.toString()}");
+    }
+
+    return res;
   }
 }
