@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_home_automation/models/auduino_model.dart';
 import 'package:path/path.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_home_automation/networks/dio_api.dart';
@@ -463,5 +462,236 @@ class NetworkCalls {
     }
 
     return res;
+  }
+
+  static Future<Map<String, dynamic>> getWeather() async {
+    // String gwaliorUrl="https://api.apixu.com/v1/current.json?key=0811bc94f11146aaa1b180422191404&q=Gwalior";
+    String gwaliorUrl = "https://api.apixu.com/v1/current.json";
+
+    Map<String, dynamic> res;
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.get(
+        gwaliorUrl,
+        queryParameters: <String, String>{
+          "key": "0811bc94f11146aaa1b180422191404",
+          "q": "Gwalior",
+        },
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+      // print("Weather Res :- ${response.data}");
+
+      res = response.data;
+    } on Exception catch (err) {
+      print("Error - NetworkCalls - getWeather :- ${err.toString()}");
+    }
+
+    return res;
+  }
+
+  static Future<bool> setMotionDetectionEnabledStatus(
+      String userId, bool status) async {
+    bool statusRes = !status;
+
+    String path = "/home/postMotionDetectionEnabledStatus";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.put(
+        path,
+        data: {
+          "userId": userId,
+          "status": status,
+        },
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      statusRes = response.data["status"];
+    } on Exception catch (err) {
+      print("Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
+    }
+    return statusRes;
+  }
+
+  static Future<Map> getMotionDetectionEnabledStatus(String userId) async {
+    final String mdEnabledStatusPath = "/home/getMotionDetectionEnabledStatus";
+    Map res;
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.get(
+        mdEnabledStatusPath,
+        queryParameters: <String, dynamic>{
+          "userId": userId,
+        },
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      res = response.data;
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - getRoomsAppliancesCount :- ${err.toString()}");
+    }
+
+    return res;
+  }
+
+  static Future<bool> setTempBulbButtonStatus(int led, bool status) async {
+    bool statusRes = !status;
+
+    String path = "http://192.168.43.129/";
+
+    try {
+      Dio dio = Dio();
+      Response response;
+
+      response = await dio.get(
+        path,
+        queryParameters: {"led$led": status ? "on" : "off"},
+        options: Options(
+          responseType: ResponseType.plain,
+        ),
+      );
+
+      // statusRes = response.data["status"];
+      statusRes = response.data == "1" ? true : false;
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - setTempBulbButtonStatus :- ${err.toString()}");
+    }
+    return await putTempBulbButtonStatus(statusRes, led);
+  }
+
+  static Future<bool> putTempBulbButtonStatus(bool status, int bulb) async {
+    bool statusRes;
+    String path = "/room/putBulbButtonStatus";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.put(
+        path,
+        data: {"status": status, "bulb": bulb},
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      statusRes = response.data["status"];
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - postTempAutoModeStatus :- ${err.toString()}");
+    }
+
+    return statusRes;
+  }
+
+  static Future<bool> setTempAutoModeStatus(bool status) async {
+    bool statusRes = !status;
+
+    String path = "http://192.168.43.129/";
+
+    try {
+      Dio dio = Dio();
+      Response response;
+
+      response = await dio.get(
+        path,
+        queryParameters: {"automode": status ? "on" : "off"},
+        options: Options(
+          responseType: ResponseType.plain,
+        ),
+      );
+
+      statusRes = response.data == "1" ? true : false;
+    } on Exception catch (err) {
+      print("Error - NetworkCalls - deteleAppliance :- ${err.toString()}");
+    }
+    return await putTempAutoModeStatus(statusRes);
+  }
+
+  static Future<bool> putTempAutoModeStatus(bool status) async {
+    bool statusRes;
+    String path = "/room/putAutoModeStatus";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.put(
+        path,
+        data: {"automode": status},
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      statusRes = response.data["status"];
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - postTempAutoModeStatus :- ${err.toString()}");
+    }
+
+    return statusRes;
+  }
+
+  static Future<Map> getTempAutoModeStatus() async {
+    Map statusRes;
+    String path = "/room/getAutoModeStatus";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.get(
+        path,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      statusRes = response.data;
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - getTempAutoModeStatus :- ${err.toString()}");
+    }
+    return statusRes;
+  }
+
+  static Future<Map> getTempBulbButtonStatus() async {
+    Map statusRes;
+    String path = "/room/getBulbButtonStatus";
+
+    try {
+      Dio dio = DioAPI.getDioInstance();
+      Response response;
+
+      response = await dio.get(
+        path,
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      );
+
+      statusRes = response.data;
+    } on Exception catch (err) {
+      print(
+          "Error - NetworkCalls - getTempBulbButtonStatus :- ${err.toString()}");
+    }
+    return statusRes;
   }
 }

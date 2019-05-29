@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_home_automation/networks/network_calls.dart';
 import 'package:flutter_home_automation/utils/StatusNavBarColorChanger.dart';
+import 'package:flutter_home_automation/utils/connection.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
 import 'package:navigate/navigate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +33,15 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
     if (_prefs.containsKey("intro_done")) {
       if (_prefs.containsKey("email")) {
-        await _login();
+        if (await Connection.isConnected()) {
+          await _login();
+        } else {
+          if (Platform.isAndroid) {
+            SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          } else {
+            exit(0);
+          }
+        }
       } else {
         await Navigate.navigate(
           context,
@@ -92,8 +103,8 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
 
   @override
   Widget build(BuildContext context) {
- height = MediaQuery.of(context).size.height;
-  width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
 
     StatusNavBarColorChanger.changeNavBarColor(CustomColors.darkGrey);
 

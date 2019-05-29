@@ -3,8 +3,9 @@ import 'package:permission_handler/permission_handler.dart';
 class PermissionManager {
   static Future<Null> requestPermissions(
       List<PermissionGroup> reqPermissions) async {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions(reqPermissions);
+    // Map<PermissionGroup, PermissionStatus> permissions =
+    //     await PermissionHandler().requestPermissions(reqPermissions);
+    await PermissionHandler().requestPermissions(reqPermissions);
     //return permissions;
   }
 

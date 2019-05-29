@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -48,6 +48,7 @@ dependencies:
   rounded_modal:
   path_provider:
   cached_network_image:
+  connectivity:
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,7 @@ flutter:
    - assets/colorful_bg1.png
    - assets/colorful_bg2.jpg
    - assets/colorful_bg3.png
+   - assets/sunny.png
 
   #  - images/a_dot_ham.jpeg
 

@@ -124,7 +124,7 @@ public class MotionDetectionService extends Service {
         mIntent.putExtra("data", data);
         ctx.sendBroadcast(mIntent);
 
-        socket.emit("md", data);
+//        socket.emit("md", data);
 
     };
 
@@ -143,7 +143,7 @@ public class MotionDetectionService extends Service {
         } catch (URISyntaxException e) {
             Log.d("ERROR", e.getMessage());
         }
-        socket.on("motion_detection", motionDetectionListener);
+        socket.on("motiondetection", motionDetectionListener);
         socket.connect();
     }
 

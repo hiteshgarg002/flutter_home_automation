@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_home_automation/blocs/add_appliance_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/auth_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/home_page_bloc.dart';
+import 'package:flutter_home_automation/blocs/monitor_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/blocs/room_page_bloc.dart';
 import 'package:flutter_home_automation/pages/add_appliance_page.dart';
@@ -20,7 +21,10 @@ import 'package:navigate/navigate.dart';
 class RouteHandler {
   static var _humidityPageHandler = Handler(
     pageBuilder: (BuildContext context, dynamic args) {
-      return HumidityPage();
+      return BlocProvider(
+        bloc: MonitorPageBloc(),
+        child: HumidityPage(),
+      );
     },
   );
 
@@ -38,7 +42,10 @@ class RouteHandler {
 
   static var _lightIntensityPageHandler = Handler(
     pageBuilder: (BuildContext context, dynamic args) {
-      return LightIntensityPage();
+      return BlocProvider(
+        bloc: MonitorPageBloc(),
+        child: LightIntensityPage(),
+      );
     },
   );
 

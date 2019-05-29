@@ -26,7 +26,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final FocusNode _emailPhoneFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final String BULB_ANIM_HERO_TAG = "BULBANIMHEROTAG";
+  static const String BULB_ANIM_HERO_TAG = "BULBANIMHEROTAG";
 
   ScrollController _scrollController;
   AuthPageBloc _authPageBloc;

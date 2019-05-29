@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
-import 'package:pigment/pigment.dart';
 
 class IntroSliderOnePage extends StatefulWidget {
   @override

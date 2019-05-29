@@ -1,4 +1,5 @@
 import 'package:adhara_socket_io/adhara_socket_io.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -7,12 +8,16 @@ import 'package:flutter_home_automation/blocs/monitor_page_bloc.dart';
 import 'package:flutter_home_automation/blocs/profile_dialog_bloc.dart';
 import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
 import 'package:flutter_home_automation/networks/dio_api.dart';
+import 'package:flutter_home_automation/networks/network_calls.dart';
+import 'package:flutter_home_automation/utils/connection.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
+import 'package:flutter_home_automation/utils/native_calls.dart';
 import 'package:flutter_home_automation/widgets/profile_dialog.dart';
 import 'package:navigate/navigate.dart';
 import 'package:pigment/pigment.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:xlive_switch/xlive_switch.dart';
 
 class MonitorPage extends StatefulWidget {
   @override
@@ -28,6 +33,7 @@ class _MonitorPageState extends State<MonitorPage> {
   final String _notDetectedAnimationPath = "animations/success.flr";
   final String _humidityHeroTag = "HUMIDITY";
   final String _lightIntensityHeroTag = "LIGHT_INTENSITY";
+  final GlobalKey<ScaffoldState> _sfKey = GlobalKey<ScaffoldState>();
   SharedPreferences _prefs;
   double height, width;
   SocketIO _socketIO;
@@ -39,16 +45,28 @@ class _MonitorPageState extends State<MonitorPage> {
     _homePageBloc = BlocProvider.of<HomePageBloc>(context);
     _monitorPageBloc = BlocProvider.of<MonitorPageBloc>(context);
 
-    _getReloadPhotoIO();
+    _setupSocketIO();
+    _getWeather();
+
+    NativeCalls.getMotionDetectionStatus(_monitorPageBloc);
   }
 
   Future _setUpSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
 
     _monitorPageBloc.setSharedPreferences(_prefs);
+
+    Map status = await NetworkCalls.getMotionDetectionEnabledStatus(
+        _prefs.getString("userId"));
+
+    _monitorPageBloc.setMotionDetectionEnabledStatus(status["status"] as bool);
   }
 
-  Future<Null> _getReloadPhotoIO() async {
+  Future _getWeather() async {
+    _monitorPageBloc.setWeather(await NetworkCalls.getWeather());
+  }
+
+  Future<Null> _setupSocketIO() async {
     await _setUpSharedPreferences();
 
     SocketIOManager manager = SocketIOManager();
@@ -87,6 +105,21 @@ class _MonitorPageState extends State<MonitorPage> {
 
     _socketIO.on("reloadName", (dynamic data) {
       _setUpSharedPreferences();
+    });
+
+    _socketIO.on("humidity", (dynamic data) {
+      print("Hum :- $data");
+      _monitorPageBloc.setHumidityData(data.toString());
+    });
+
+    _socketIO.on("temperature", (dynamic data) {
+      print("temp :- $data");
+      _monitorPageBloc.setTempData(data.toString());
+    });
+
+    _socketIO.on("lightintensity", (dynamic data) {
+      print("li :- $data");
+      _monitorPageBloc.setLIData((data / 10).toString());
     });
 
     _socketIO.connect();
@@ -149,13 +182,32 @@ class _MonitorPageState extends State<MonitorPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "26",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: ((6.096 * height) / 100),
-                      ),
+                    StreamBuilder<String>(
+                      stream: _monitorPageBloc.getHumidityData,
+                      builder: (context, AsyncSnapshot<String> snapshot) {
+                        return snapshot.hasData
+                            ? Text(
+                                "${snapshot.data}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: ((6.096 * height) / 100),
+                                ),
+                              )
+                            : Container(
+                                height: ((2.0 * height) / 100),
+                                width: ((2.0 * height) / 100),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                    strokeWidth: 1.7,
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                              );
+                      },
                     ),
                     Text(
                       "%",
@@ -238,13 +290,32 @@ class _MonitorPageState extends State<MonitorPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "22",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: ((6.096 * height) / 100),
-                      ),
+                    StreamBuilder<String>(
+                      stream: _monitorPageBloc.getTempData,
+                      builder: (context, AsyncSnapshot<String> snapshot) {
+                        return snapshot.hasData
+                            ? Text(
+                                "${snapshot.data}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: ((6.096 * height) / 100),
+                                ),
+                              )
+                            : Container(
+                                height: ((2.0 * height) / 100),
+                                width: ((2.0 * height) / 100),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                    strokeWidth: 1.7,
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                              );
+                      },
                     ),
                     Text(
                       "°C",
@@ -321,18 +392,72 @@ class _MonitorPageState extends State<MonitorPage> {
                   width: ((8.128 * height) / 100),
                   child: StreamBuilder<bool>(
                     initialData: false,
-                    stream: _monitorPageBloc.getMotionDetectedStatus,
+                    stream: _monitorPageBloc.getMotionDetectionEnabledStatus,
                     builder: (BuildContext context,
-                        AsyncSnapshot<bool> motionDetectionSnapshot) {
-                      return FlareActor(
-                        motionDetectionSnapshot.data
-                            ? _detectedAnimationPath
-                            : _notDetectedAnimationPath,
-                        animation: motionDetectionSnapshot.data
-                            ? _detectedAnimation
-                            : _notDetectedAnimation,
-                        alignment: Alignment.centerLeft,
-                      );
+                        AsyncSnapshot<bool> enabledSnapshot) {
+                      if (enabledSnapshot.data) {
+                        NativeCalls.startMotionDetectionSocketIOService();
+
+                        return StreamBuilder<bool>(
+                          initialData: false,
+                          stream: _monitorPageBloc.getMotionDetectedStatus,
+                          builder: (BuildContext context,
+                              AsyncSnapshot<bool> motionDetectionSnapshot) {
+                            return FlareActor(
+                              motionDetectionSnapshot.data
+                                  ? _detectedAnimationPath
+                                  : _notDetectedAnimationPath,
+                              animation: motionDetectionSnapshot.data
+                                  ? _detectedAnimation
+                                  : _notDetectedAnimation,
+                              alignment: Alignment.centerLeft,
+                            );
+                          },
+                        );
+                      } else {
+                        NativeCalls.stopMotionDetectionSocketIOService();
+
+                        return AvatarGlow(
+                          glowColor: Colors.red,
+                          repeat: true,
+                          showTwoGlows: true,
+                          endRadius: 35.0,
+                          child: Icon(
+                            Icons.warning,
+                            color: Colors.orange,
+                            size: 35.0,
+                          ),
+                        );
+                      }
+
+                      // return enabledSnapshot.data
+                      //     ? StreamBuilder<bool>(
+                      //         initialData: false,
+                      //         stream: _monitorPageBloc.getMotionDetectedStatus,
+                      //         builder: (BuildContext context,
+                      //             AsyncSnapshot<bool> motionDetectionSnapshot) {
+                      //           return FlareActor(
+                      //             motionDetectionSnapshot.data
+                      //                 ? _detectedAnimationPath
+                      //                 : _notDetectedAnimationPath,
+                      //             animation: motionDetectionSnapshot.data
+                      //                 ? _detectedAnimation
+                      //                 : _notDetectedAnimation,
+                      //             alignment: Alignment.centerLeft,
+                      //           );
+                      //         },
+                      //       )
+                      //     : AvatarGlow(
+                      //         glowColor: Colors.red,
+                      //         repeat: true,
+                      //         showTwoGlows: true,
+                      //         endRadius: 35.0,
+                      //         child: Icon(
+                      //           Icons.warning,
+                      //           color: Colors.orange,
+                      //           size: 35.0,
+                      //         ),
+                      //       );
                     },
                   ),
                 ),
@@ -405,13 +530,32 @@ class _MonitorPageState extends State<MonitorPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "50",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: ((6.096 * height) / 100),
-                      ),
+                    StreamBuilder<String>(
+                      stream: _monitorPageBloc.getLIData,
+                      builder: (context, AsyncSnapshot<String> snapshot) {
+                        return snapshot.hasData
+                            ? Text(
+                                "${snapshot.data}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: ((6.096 * height) / 100),
+                                ),
+                              )
+                            : Container(
+                                height: ((2.0 * height) / 100),
+                                width: ((2.0 * height) / 100),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                    strokeWidth: 1.7,
+                                    backgroundColor: Colors.transparent,
+                                  ),
+                                ),
+                              );
+                      },
                     ),
                     Text(
                       "%",
@@ -593,7 +737,7 @@ class _MonitorPageState extends State<MonitorPage> {
                     left: ((3.386 * height) / 100),
                   ),
                   child: Text(
-                    "Goodevening!",
+                    "Good day!",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: ((4.064 * height) / 100),
@@ -614,7 +758,7 @@ class _MonitorPageState extends State<MonitorPage> {
                       String name = prefsSnapshot.hasData
                           ? prefsSnapshot.data.getString("name").contains(" ")
                               ? "${prefsSnapshot.data.getString("name").split(" ")[0]}!"
-                              : "${prefsSnapshot.data.getString("name")}"
+                              : "${prefsSnapshot.data.getString("name")}!"
                           : "";
 
                       return Text(
@@ -635,26 +779,7 @@ class _MonitorPageState extends State<MonitorPage> {
                   padding: EdgeInsets.only(
                     left: ((3.386 * height) / 100),
                   ),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.cloud_queue,
-                        color: Colors.white,
-                        size: ((3.115 * height) / 100),
-                      ),
-                      SizedBox(
-                        width: ((1.083 * height) / 100),
-                      ),
-                      Text(
-                        "16°C",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ((2.167 * height) / 100),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
+                  child: _buildWeatherIconTemperatureWidget(),
                 ),
                 Padding(
                   padding: EdgeInsets.only(
@@ -673,6 +798,54 @@ class _MonitorPageState extends State<MonitorPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildWeatherIconTemperatureWidget() {
+    return StreamBuilder<Map<String, dynamic>>(
+      initialData: <String, dynamic>{"waiting": true},
+      stream: _monitorPageBloc.getWeather,
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, dynamic>> weatherSnapshot) {
+        if (!(weatherSnapshot.data.containsKey("waiting"))) {
+          dynamic temperature = weatherSnapshot.data["current"]["temp_c"];
+          String iconURL = weatherSnapshot.data["current"]["condition"]["icon"];
+
+          return Row(
+            children: <Widget>[
+              FadeInImage.assetNetwork(
+                image: "https:$iconURL",
+                placeholder: "assets/sunny.png",
+                height: ((4.415 * height) / 100),
+                width: ((4.415 * height) / 100),
+              ),
+              Text(
+                "$temperature°C",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: ((2.167 * height) / 100),
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            ],
+          );
+        } else {
+          return Padding(
+            padding: EdgeInsets.only(bottom: ((2.438 * height) / 100)),
+            child: Container(
+              height: ((2.0 * height) / 100),
+              width: ((2.0 * height) / 100),
+              child: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  strokeWidth: 1.7,
+                  backgroundColor: Colors.transparent,
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
@@ -695,71 +868,71 @@ class _MonitorPageState extends State<MonitorPage> {
     );
   }
 
-  Widget _buildRoomDropDownWidget() {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton(
-        hint: Text("-- ROOM --"),
-        iconSize: ((3.251 * height) / 100),
-        style: TextStyle(
-          color: Colors.black,
-        ),
-        isExpanded: false,
-        items: <DropdownMenuItem>[
-          DropdownMenuItem(
-            child: Chip(
-              backgroundColor: Colors.white,
-              label: Text(
-                "Home",
-                style: TextStyle(
-                  fontSize: ((2.032 * height) / 100),
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          DropdownMenuItem(
-            child: Chip(
-              backgroundColor: Colors.white,
-              label: Text(
-                "Living Room",
-                style: TextStyle(
-                  fontSize: ((2.032 * height) / 100),
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          DropdownMenuItem(
-            child: Chip(
-              backgroundColor: Colors.white,
-              label: Text(
-                "Dinning Room",
-                style: TextStyle(
-                  fontSize: ((2.032 * height) / 100),
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-          DropdownMenuItem(
-            child: Chip(
-              backgroundColor: Colors.white,
-              label: Text(
-                "Kitchen",
-                style: TextStyle(
-                  fontSize: ((2.032 * height) / 100),
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ],
-        onChanged: (value) {},
-      ),
-    );
-  }
+  // Widget _buildRoomDropDownWidget() {
+  //   return DropdownButtonHideUnderline(
+  //     child: DropdownButton(
+  //       hint: Text("-- ROOM --"),
+  //       iconSize: ((3.251 * height) / 100),
+  //       style: TextStyle(
+  //         color: Colors.black,
+  //       ),
+  //       isExpanded: false,
+  //       items: <DropdownMenuItem>[
+  //         DropdownMenuItem(
+  //           child: Chip(
+  //             backgroundColor: Colors.white,
+  //             label: Text(
+  //               "Home",
+  //               style: TextStyle(
+  //                 fontSize: ((2.032 * height) / 100),
+  //                 color: Colors.black,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         DropdownMenuItem(
+  //           child: Chip(
+  //             backgroundColor: Colors.white,
+  //             label: Text(
+  //               "Living Room",
+  //               style: TextStyle(
+  //                 fontSize: ((2.032 * height) / 100),
+  //                 color: Colors.black,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         DropdownMenuItem(
+  //           child: Chip(
+  //             backgroundColor: Colors.white,
+  //             label: Text(
+  //               "Dinning Room",
+  //               style: TextStyle(
+  //                 fontSize: ((2.032 * height) / 100),
+  //                 color: Colors.black,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //         DropdownMenuItem(
+  //           child: Chip(
+  //             backgroundColor: Colors.white,
+  //             label: Text(
+  //               "Kitchen",
+  //               style: TextStyle(
+  //                 fontSize: ((2.032 * height) / 100),
+  //                 color: Colors.black,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //       onChanged: (value) {},
+  //     ),
+  //   );
+  // }
 
-  Widget _buildRoomDropDownSliverWidget() {
+  Widget _buildHomeMotionDetectionSliverWidget() {
     return StreamBuilder<bool>(
       initialData: false,
       stream: _homePageBloc.getCollapsedAppBatStatus,
@@ -789,8 +962,40 @@ class _MonitorPageState extends State<MonitorPage> {
                       canvasColor: Colors.white,
                       brightness: Brightness.dark,
                     ),
-                    child: _buildRoomDropDownWidget(),
+                    child: Chip(
+                      backgroundColor: Colors.white,
+                      label: Text(
+                        "Home",
+                        style: TextStyle(
+                          fontSize: ((2.032 * height) / 100),
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    // child: _buildRoomDropDownWidget(),
                   ),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                Text(
+                  "Motion Detection",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(
+                  width: 5.0,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: ((1.083 * height) / 100),
+                    right: ((2.032 * height) / 100),
+                    bottom: ((1.083 * height) / 100),
+                  ),
+                  child: _buildMotionDetectionToggleWidget(),
                 ),
               ],
             ),
@@ -798,6 +1003,63 @@ class _MonitorPageState extends State<MonitorPage> {
         );
       },
     );
+  }
+
+  Widget _buildMotionDetectionToggleWidget() {
+    return StreamBuilder<bool>(
+      initialData: false,
+      stream: _monitorPageBloc.getMotionDetectionEnabledStatus,
+      builder: (BuildContext context, AsyncSnapshot<bool> enabledSapshot) {
+        return XlivSwitch(
+          activeColor: Colors.lightBlue,
+          unActiveColor: Colors.white,
+          thumbColor: Colors.black45,
+          value: enabledSapshot.data,
+          onChanged: _onMotionDetectionToggleStatusChange,
+        );
+      },
+    );
+  }
+
+  Future _onMotionDetectionToggleStatusChange(bool status) async {
+    if (await Connection.isConnected()) {
+      _monitorPageBloc.setMotionDetectionEnabledStatus(status);
+
+      bool statusRes = await NetworkCalls.setMotionDetectionEnabledStatus(
+          _prefs.getString("userId"), status);
+
+      _monitorPageBloc.setMotionDetectionEnabledStatus(statusRes);
+    } else {
+      _sfKey.currentState.showSnackBar(
+        SnackBar(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Icon(
+                Icons.warning,
+                color: Colors.black,
+                size: 24.0,
+              ),
+              SizedBox(
+                width: 5.0,
+              ),
+              Text(
+                "Network unavailable!",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: Colors.white,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   Widget _buildSliverGridWidget() {
@@ -821,12 +1083,15 @@ class _MonitorPageState extends State<MonitorPage> {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
 
+    // print("18 is the ${(18 * 100) / height}% of Height :- $height");
+
     return Scaffold(
+      key: _sfKey,
       backgroundColor: CustomColors.darkGrey,
       body: CustomScrollView(
         slivers: <Widget>[
           _buildSliverAppBarWidget(),
-          _buildRoomDropDownSliverWidget(),
+          _buildHomeMotionDetectionSliverWidget(),
           SliverPadding(
             padding: EdgeInsets.only(
               top: ((2.032 * height) / 100),
@@ -844,9 +1109,13 @@ class _MonitorPageState extends State<MonitorPage> {
   @override
   void dispose() {
     if (_socketIO != null) {
-      _socketIO.off("reloadPhoto", (dynamic data) {
-        print("SocketIO Disconnected :- MonitorPage");
-      });
+      _socketIO.off("reloadPhoto");
+      _socketIO.off("reloadName");
+      _socketIO.off("lightintensity");
+      _socketIO.off("humidity");
+      _socketIO.off("temperature");
+
+      _socketIO.emit('dis', [_prefs.getString("userId")]);
     }
     super.dispose();
   }

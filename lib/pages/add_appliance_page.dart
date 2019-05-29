@@ -29,7 +29,7 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
   List<DropdownMenuItem<int>> _pinDropDownItemsList;
   String _selectedDeviceId;
   int _selectedDevicePIN;
-  String _applianceType;
+  // String _applianceType;
   TextEditingController _applianceNameTextController;
   SharedPreferences _prefs;
   final GlobalKey<ScaffoldState> _sfKey = GlobalKey<ScaffoldState>();
@@ -286,7 +286,9 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
           Align(
             alignment: Alignment.topLeft,
             child: Padding(
-              padding: EdgeInsets.only(top: ((8.128 * height) / 100), left: ((3.386 * height) / 100)),
+              padding: EdgeInsets.only(
+                  top: ((8.128 * height) / 100),
+                  left: ((3.386 * height) / 100)),
               child: Text(
                 "Add Appliance",
                 style: TextStyle(
@@ -302,101 +304,101 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
     );
   }
 
-  Widget _buildApplianceTypeWidget() {
-    return StreamBuilder<ApplianceType>(
-      initialData: ApplianceType.NONE,
-      stream: _addAppliancePageBloc.getApplianceType,
-      builder: (BuildContext context,
-          AsyncSnapshot<ApplianceType> applianceTypeSnapshot) {
-        switch (applianceTypeSnapshot.data) {
-          case ApplianceType.READING:
-            _applianceType = "READING";
-            break;
+  // Widget _buildApplianceTypeWidget() {
+  //   return StreamBuilder<ApplianceType>(
+  //     initialData: ApplianceType.NONE,
+  //     stream: _addAppliancePageBloc.getApplianceType,
+  //     builder: (BuildContext context,
+  //         AsyncSnapshot<ApplianceType> applianceTypeSnapshot) {
+  //       switch (applianceTypeSnapshot.data) {
+  //         case ApplianceType.READING:
+  //           _applianceType = "READING";
+  //           break;
 
-          case ApplianceType.STATUS:
-            _applianceType = "STATUS";
-            break;
+  //         case ApplianceType.STATUS:
+  //           _applianceType = "STATUS";
+  //           break;
 
-          default:
-            _applianceType = "";
-        }
+  //         default:
+  //           _applianceType = "";
+  //       }
 
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-              child: Container(
-                height: 90.0,
-                width: 90.0,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 2.0,
-                  ),
-                  color: applianceTypeSnapshot.data == ApplianceType.NONE ||
-                          applianceTypeSnapshot.data == ApplianceType.READING
-                      ? Colors.white
-                      : Colors.black,
-                  borderRadius: BorderRadius.circular(((6.096 * height) / 100)),
-                ),
-                child: Center(
-                  child: Text(
-                    "Status",
-                    style: TextStyle(
-                      color: applianceTypeSnapshot.data == ApplianceType.NONE ||
-                              applianceTypeSnapshot.data ==
-                                  ApplianceType.READING
-                          ? Colors.black
-                          : Colors.white,
-                      fontSize: ((2.032 * height) / 100),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {
-                _addAppliancePageBloc.setApplianceType(ApplianceType.STATUS);
-              },
-            ),
-            GestureDetector(
-              child: Container(
-                height: 90.0,
-                width: 90.0,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 2.0,
-                  ),
-                  color: applianceTypeSnapshot.data == ApplianceType.NONE ||
-                          applianceTypeSnapshot.data == ApplianceType.STATUS
-                      ? Colors.white
-                      : Colors.black,
-                  borderRadius: BorderRadius.circular(((10.0 * height) / 100)),
-                ),
-                child: Center(
-                  child: Text(
-                    "Reading",
-                    style: TextStyle(
-                      color: applianceTypeSnapshot.data == ApplianceType.NONE ||
-                              applianceTypeSnapshot.data == ApplianceType.STATUS
-                          ? Colors.black
-                          : Colors.white,
-                      fontSize: ((2.032 * height) / 100),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-              onTap: () {
-                _addAppliancePageBloc.setApplianceType(ApplianceType.READING);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  //       return Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: <Widget>[
+  //           GestureDetector(
+  //             child: Container(
+  //               height: 90.0,
+  //               width: 90.0,
+  //               decoration: BoxDecoration(
+  //                 border: Border.all(
+  //                   color: Colors.black,
+  //                   width: 2.0,
+  //                 ),
+  //                 color: applianceTypeSnapshot.data == ApplianceType.NONE ||
+  //                         applianceTypeSnapshot.data == ApplianceType.READING
+  //                     ? Colors.white
+  //                     : Colors.black,
+  //                 borderRadius: BorderRadius.circular(((10.0 * height) / 100)),
+  //               ),
+  //               child: Center(
+  //                 child: Text(
+  //                   "Status",
+  //                   style: TextStyle(
+  //                     color: applianceTypeSnapshot.data == ApplianceType.NONE ||
+  //                             applianceTypeSnapshot.data ==
+  //                                 ApplianceType.READING
+  //                         ? Colors.black
+  //                         : Colors.white,
+  //                     fontSize: ((2.032 * height) / 100),
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             onTap: () {
+  //               _addAppliancePageBloc.setApplianceType(ApplianceType.STATUS);
+  //             },
+  //           ),
+  //           GestureDetector(
+  //             child: Container(
+  //               height: 90.0,
+  //               width: 90.0,
+  //               decoration: BoxDecoration(
+  //                 border: Border.all(
+  //                   color: Colors.black,
+  //                   width: 2.0,
+  //                 ),
+  //                 color: applianceTypeSnapshot.data == ApplianceType.NONE ||
+  //                         applianceTypeSnapshot.data == ApplianceType.STATUS
+  //                     ? Colors.white
+  //                     : Colors.black,
+  //                 borderRadius: BorderRadius.circular(((10.0 * height) / 100)),
+  //               ),
+  //               child: Center(
+  //                 child: Text(
+  //                   "Reading",
+  //                   style: TextStyle(
+  //                     color: applianceTypeSnapshot.data == ApplianceType.NONE ||
+  //                             applianceTypeSnapshot.data == ApplianceType.STATUS
+  //                         ? Colors.black
+  //                         : Colors.white,
+  //                     fontSize: ((2.032 * height) / 100),
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //             onTap: () {
+  //               _addAppliancePageBloc.setApplianceType(ApplianceType.READING);
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildAddApplianceButtonWidget() {
     return OutlineButton.icon(
@@ -433,16 +435,18 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
       _showSnackBar("PIN must be selected!");
     } else if (_applianceNameTextController.text.isEmpty) {
       _showSnackBar("Appliance name must not be empty!");
-    } else if (_applianceType.isEmpty) {
-      _showSnackBar("Appliance type must be selected!");
-    } else {
+    }
+    // else if (_applianceType.isEmpty) {
+    //   _showSnackBar("Appliance type must be selected!");
+    // }
+    else {
       await NetworkCalls.addAppliance(
         roomId: widget.roomId,
         applianceName: _applianceNameTextController.text,
         arduinoId: _selectedDeviceId,
         pin: _selectedDevicePIN,
         userId: _prefs.getString("userId"),
-        applianceType: _applianceType,
+        applianceType: "STATUS",
       );
 
       widget.reloadRoom();
@@ -516,7 +520,8 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                       height: ((2.709 * height) / 100),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: ((6.096 * height) / 100)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ((6.096 * height) / 100)),
                       child: _buildApplianceNameTextFieldWidget(),
                     ),
                     SizedBox(height: ((4.064 * height) / 100)),
@@ -524,32 +529,34 @@ class _AddAppliancePageState extends State<AddAppliancePage> {
                       child: _buildPinDropDownWidget(),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: ((2.032 * height) / 100)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: ((2.032 * height) / 100)),
                       child: Divider(),
                     ),
-                    Center(
-                      child: Chip(
-                        backgroundColor: Colors.black45,
-                        label: Text(
-                          "Appliance Type",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: ((2.302 * height) / 100),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: ((3.386 * height) / 100),
-                    ),
-                    _buildApplianceTypeWidget(),
+                    // Center(
+                    //   child: Chip(
+                    //     backgroundColor: Colors.black45,
+                    //     label: Text(
+                    //       "Appliance Type",
+                    //       style: TextStyle(
+                    //         color: Colors.white,
+                    //         fontSize: ((2.302 * height) / 100),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: ((3.386 * height) / 100),
+                    // ),
+                    // _buildApplianceTypeWidget(),
                     Expanded(
                       child: Stack(
                         children: <Widget>[
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Padding(
-                              padding: EdgeInsets.only(bottom: ((2.709 * height) / 100)),
+                              padding: EdgeInsets.only(
+                                  bottom: ((2.709 * height) / 100)),
                               child: _buildAddApplianceButtonWidget(),
                             ),
                           ),

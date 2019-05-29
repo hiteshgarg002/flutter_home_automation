@@ -5,9 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -21,15 +19,23 @@ public class MainActivity extends FlutterActivity {
     private final static String INTENT_ACTION = "com.flutter.homeautomation";
     private Context ctx;
     private MethodChannel methodChannel;
-    Intent mServiceIntent;
+    private Intent mServiceIntent;
     private MotionDetectionService mYourService;
+    private MediaPlayer mp;
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            playSound();
+            if (intent.getStringExtra("data").equalsIgnoreCase("1")) {
+             setupAlertSound();
+            } else if (intent.getStringExtra("data").equalsIgnoreCase("0")) {
+                if (mp != null && mp.isPlaying()) {
+                    mp.stop();
+                }
+            }
+
             System.out.println("DATA :- " + intent.getStringExtra("data"));
-            new MethodChannel(getFlutterView(), "flutter-home-automation-testing").invokeMethod("testing", intent.getStringExtra("data") + "");
+            new MethodChannel(getFlutterView(), "flutter-home-automation-md").invokeMethod("getMotionDetectionStatus", intent.getStringExtra("data") + "");
         }
     };
 
@@ -49,7 +55,21 @@ public class MainActivity extends FlutterActivity {
                     startService(mServiceIntent);
                 }
             }
+
+            if (methodCall.method.equals("stopMotionDetectionSocketIOService")) {
+                mYourService = new MotionDetectionService();
+                mServiceIntent = new Intent(this, mYourService.getClass());
+                if (isMyServiceRunning(mYourService.getClass())) {
+                    stopService(mServiceIntent);
+
+                    if (mp != null && mp.isPlaying()) {
+                        mp.stop();
+                    }
+                }
+            }
         });
+
+//        setupAlertSound();
 
         GeneratedPluginRegistrant.registerWith(this);
     }
@@ -78,10 +98,20 @@ public class MainActivity extends FlutterActivity {
         ctx.registerReceiver(broadcastReceiver, new IntentFilter(INTENT_ACTION));
     }
 
-    private void playSound() {
-        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-        r.play();
+    private void setupAlertSound() {
+//        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+//        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+//        r.play();
+        MediaPlayer mpAlert = MediaPlayer.create(getApplicationContext(), R.raw.alert);
+        mpAlert.setOnPreparedListener(this::onPrepared);
+        mpAlert.setLooping(false);
+    }
+
+    private void onPrepared(MediaPlayer player) {
+        mp=player;
+        if(!player.isPlaying()) {
+            player.start();
+        }
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

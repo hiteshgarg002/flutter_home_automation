@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_home_automation/utils/custom_colors.dart';
-import 'package:pigment/pigment.dart';
 
 Color mainBGColor = Color(0xFF652A78);
 Color redColor = Color(0xFFDE3C10);

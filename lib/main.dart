@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_home_automation/blocs/auth_page_bloc.dart';
-import 'package:flutter_home_automation/blocs/home_page_bloc.dart';
-import 'package:flutter_home_automation/blocs/provider/bloc_provider.dart';
-import 'package:flutter_home_automation/blocs/room_page_bloc.dart';
-import 'package:flutter_home_automation/pages/auth/login_page.dart';
-import 'package:flutter_home_automation/pages/room_page.dart';
 import 'package:flutter_home_automation/pages/splash_screen_page.dart';
-import 'package:flutter_home_automation/utils/custom_colors.dart';
+import 'package:flutter_home_automation/utils/native_calls.dart';
 import 'package:flutter_home_automation/utils/route_handler.dart';
 import 'package:flutter_statusbar_manager/flutter_statusbar_manager.dart';
 import 'package:navigate/navigate.dart';
@@ -37,7 +31,7 @@ void main() async {
 
   // await FlutterStatusbarManager.setFullscreen(true);
   // NativeCalls.startMotionDetectionSocketIOService();
-  // NativeCalls.getDatafromAndroid();
+  // NativeCalls.getMotionDetectionStatus();
 
   runApp(
     MaterialApp(

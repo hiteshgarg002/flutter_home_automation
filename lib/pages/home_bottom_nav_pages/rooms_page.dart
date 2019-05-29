@@ -1,4 +1,3 @@
-import 'package:adhara_socket_io/adhara_socket_io.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -62,20 +61,12 @@ class _RoomsPageState extends State<RoomsPage> {
       radius: ((2.641 * height) / 100),
       child: Center(
         child: FutureBuilder<SharedPreferences>(
-          future: _getSharedPreferences(),
+          future: _getSharedPreferences(), 
           builder: (BuildContext context,
               AsyncSnapshot<SharedPreferences> snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
-                return CircleAvatar(
-                  radius: ((2.641 * height) / 100),
-                  backgroundColor: Colors.white,
-                );
               case ConnectionState.active:
-                return CircleAvatar(
-                  radius: ((2.641 * height) / 100),
-                  backgroundColor: Colors.white,
-                );
               case ConnectionState.waiting:
                 return CircleAvatar(
                   radius: ((2.641 * height) / 100),
@@ -637,16 +628,13 @@ class _RoomsPageState extends State<RoomsPage> {
                 ),
               )
             : SliverToBoxAdapter(
-                child: Container(
-                  height: height,
-                  child: Center(
-                    child: Text(
-                      "No rooms found!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: ((2.032 * height) / 100),
-                      ),
+                child: Center(
+                  child: Text(
+                    "No rooms found!",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: ((2.032 * height) / 100),
                     ),
                   ),
                 ),

@@ -11,13 +11,13 @@ class AddAppliancePageBloc implements BlocBase {
   PublishSubject<bool> _loadingController;
   BehaviorSubject<String> _arduinoDropDownValueController;
   PublishSubject<int> _pinDropDownValueController;
-  BehaviorSubject<ApplianceType> _applianceTypeController;
+  // BehaviorSubject<ApplianceType> _applianceTypeController;
 
   AddAppliancePageBloc() {
     _loadingController = PublishSubject<bool>();
     _arduinoDropDownValueController = BehaviorSubject<String>();
     _pinDropDownValueController = PublishSubject<int>();
-    _applianceTypeController = BehaviorSubject<ApplianceType>();
+    // _applianceTypeController = BehaviorSubject<ApplianceType>();
   }
 
   Sink<bool> get _setLoadingStatus => _loadingController.sink;
@@ -31,13 +31,13 @@ class AddAppliancePageBloc implements BlocBase {
   Sink<int> get _setPinDropDownValue => _pinDropDownValueController.sink;
   Observable<int> get getPinDropDownValue => _pinDropDownValueController.stream;
 
-  Sink<ApplianceType> get _setApplianceType => _applianceTypeController.sink;
-  Observable<ApplianceType> get getApplianceType =>
-      _applianceTypeController.stream;
+  // Sink<ApplianceType> get _setApplianceType => _applianceTypeController.sink;
+  // Observable<ApplianceType> get getApplianceType =>
+  //     _applianceTypeController.stream;
 
-  void setApplianceType(ApplianceType type) {
-    _setApplianceType.add(type);
-  }
+  // void setApplianceType(ApplianceType type) {
+  //   _setApplianceType.add(type);
+  // }
 
   void setPinDropDownValue(int value) {
     _setPinDropDownValue.add(value);
@@ -77,11 +77,11 @@ class AddAppliancePageBloc implements BlocBase {
     await _loadingController.drain();
     await _arduinoDropDownValueController.drain();
     await _pinDropDownValueController.drain();
-    await _applianceTypeController.drain();
+    // await _applianceTypeController.drain();
 
     await _loadingController.close();
     await _arduinoDropDownValueController.close();
     await _pinDropDownValueController.close();
-    await _applianceTypeController.close();
+    // await _applianceTypeController.close();
   }
 }
