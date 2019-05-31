@@ -477,8 +477,8 @@ class NetworkCalls {
       response = await dio.get(
         gwaliorUrl,
         queryParameters: <String, String>{
-          "key": "0811bc94f11146aaa1b180422191404",
-          "q": "Gwalior",
+          "key": "YOUR API KEY",
+          "q": "PLACE",
         },
         options: Options(
           responseType: ResponseType.json,
