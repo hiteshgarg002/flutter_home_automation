@@ -29,10 +29,6 @@ Home automation controller app, designed and developed in Flutter.
         <tr>
             <td><img src="./screenshots/13.png" width="200"/></td>
             <td><img src="./screenshots/14.png" width="200"/></td>
-            <td><img src="./screenshots/15.png" width="200"/></td>
-        </tr>
-        <tr>
-            <td><img src="./screenshots/16.png" width="200"/></td>
         </tr>
     </table>
 </ul>
