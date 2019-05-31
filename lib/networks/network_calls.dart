@@ -465,7 +465,6 @@ class NetworkCalls {
   }
 
   static Future<Map<String, dynamic>> getWeather() async {
-    // String gwaliorUrl="https://api.apixu.com/v1/current.json?key=0811bc94f11146aaa1b180422191404&q=Gwalior";
     String gwaliorUrl = "https://api.apixu.com/v1/current.json";
 
     Map<String, dynamic> res;
